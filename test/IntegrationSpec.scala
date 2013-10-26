@@ -18,7 +18,6 @@ class IntegrationSpec extends Specification {
 
       browser.goTo("http://localhost:" + port)
 
-      browser.pageSource must contain("Hello Play Framework")
     }
   }
 }

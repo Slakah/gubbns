@@ -1,9 +1,16 @@
-@(message: String)
+@(posts: Seq[BlogPost])
 
-@main("EWWelcome to Play Framework") {
+@main("Slakahs blog") {
 
-    <div class="well">
-        <h1>@message</h1>
-    </div>
+    @posts.map { post =>
+    <article>
+
+        <header>
+            <h3>@post.title</h3>
+        </header>
+        <span class="author">@post.author</span> on <time pubdate datetime="@post.published">@post.published</time>
+        <div>@post.content</div>
+    </article>
+    }
 
 }
