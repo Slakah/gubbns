@@ -1,10 +1,11 @@
 @(post: Post)
 <article>
     <header>
-        <h3>@post.title</h3>
-        <span class="author">@post.author</span>
+        <h2>@post.title</h2>
+        <small class="text-muted"><span class="author">@post.author</span>
         on
-        <time pubdate datetime="@post.published">@post.published</time>
+        <time pubdate datetime="@post.published">@post.published</time></small>
     </header>
     <div>@post.body</div>
+    <hr>
 </article>
