@@ -1,4 +1,4 @@
-@(posts: Seq[Post])
+@(posts: Iterable[Post])
 @main("Slakahs blog") {
 @posts.map { post =>
     @blog_post(post)
