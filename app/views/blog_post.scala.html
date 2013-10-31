@@ -5,9 +5,9 @@
         <small>
             <span class="author">@post.author</span>
             on
-            <time pubdate datetime="@post.published">@post.published</time>
+            <time pubdate datetime="@post.published">@pretty_date(post.published)</time>
         </small>
     </header>
-    <div>@post.body</div>
+    <div>@post.content</div>
     <hr>
 </article>
