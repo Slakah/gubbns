@@ -12,9 +12,18 @@ import play.Logger
 import util.BlogDB
 import org.joda.time.DateTime
 
-object Application extends Controller {
+object Blog extends Controller {
+  val postRepo = new PostRepository(BlogDB.db)
+
   def index = Action {
-    val posts: Seq[Post] = asScalaBufferConverter(new PostRepository(BlogDB.db).getAll()).asScala.toList
+    val posts = postRepo.all
     Ok(views.html.index.render(posts))
   }
+
+  def title(name: String) = Action {
+    val post = postRepo.byTitle(name)
+
+    Ok(views.html.index.render(Seq(post)))
+  }
+
 }

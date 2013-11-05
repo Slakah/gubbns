@@ -1,7 +1,7 @@
 package models
 
 import org.joda.time.DateTime
-import com.fasterxml.jackson.annotation.{JsonProperty}
+import com.fasterxml.jackson.annotation.{JsonIdentityInfo, JsonProperty}
 
 case class Post(
   @JsonProperty("_id") id: String,
