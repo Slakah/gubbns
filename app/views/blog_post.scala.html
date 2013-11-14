@@ -1,7 +1,7 @@
 @(post: Post)
 <article>
     <header>
-        <h2>@post.title</h2>
+        <h2><a href="/blog/@encode_uri(post.title)">@post.title</a></h2>
         <small>
             <span class="author">@post.author</span>
             on

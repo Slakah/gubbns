@@ -12,10 +12,10 @@ class  CouchDbRepoSupport[T](clazz: Class[T], db: CouchDbConnector)
   }
 
   def view(viewName: String) = {
-    db.queryView(createQuery(viewName).includeDocs(true), clazz).asScala.toList
+    db.queryView(createQuery(viewName).includeDocs(true), clazz).asScala
   }
 
   def view(viewName: String, key: String) = {
-    db.queryView(createQuery(viewName).designDocId(stdDesignDocumentId).includeDocs(true).key(key), clazz).asScala.toList
+    db.queryView(createQuery(viewName).designDocId(stdDesignDocumentId).includeDocs(true).key(key), clazz).asScala
   }
 }

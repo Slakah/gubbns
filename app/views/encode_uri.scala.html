@@ -1,0 +1,3 @@
+@(raw: String)
+@import play.utils.UriEncoding
+@(UriEncoding.encodePathSegment(raw replaceAll(" ", "-") toLowerCase, "utf-8"))

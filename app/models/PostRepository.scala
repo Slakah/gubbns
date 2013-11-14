@@ -1,8 +1,8 @@
 package models
 
-import org.ektorp.support.View
-import org.ektorp.{ViewQuery, CouchDbConnector}
+import org.ektorp.CouchDbConnector
 import play.Logger
+import org.joda.time.DateTime
 
 class PostRepository(db: CouchDbConnector)
   extends CouchDbRepoSupport[Post](classOf[Post], db: CouchDbConnector) {
@@ -10,6 +10,10 @@ class PostRepository(db: CouchDbConnector)
   def byTitle(title: String) = {
     Logger.info(stdDesignDocumentId)
 
-    view("by_title", title)(0)
+    view("by_title", title)
+  }
+
+  def next(date: DateTime) = {
+
   }
 }
