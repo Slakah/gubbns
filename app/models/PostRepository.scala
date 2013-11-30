@@ -13,7 +13,4 @@ class PostRepository(db: CouchDbConnector)
     view("by_title", title)
   }
 
-  def next(date: DateTime) = {
-
-  }
 }

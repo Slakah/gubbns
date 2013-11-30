@@ -1,0 +1,12 @@
+@(postForm: Form[(String, String)])
+
+@main("Add Post") {
+@helper.form(action = routes.Blog.submit) {
+
+@helper.inputText(postForm("title"))
+
+@helper.inputText(postForm("content"))
+<input type="submit" value="submit" />
+
+}
+}
