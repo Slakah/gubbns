@@ -20,15 +20,15 @@ object Blog extends Controller {
 
   def title(name: String) = Action {
     val postsByTitle = postRepo.byTitle(name)
-    if (postsByTitle isEmpty)
+    if (postsByTitle.isEmpty)
       NotFound
 
     val post = postsByTitle(0)
     val posts = postRepo.all
-    val postIndex = posts indexOf post
+    val postIndex = posts.indexOf(post)
 
-    val nextPost = posts lift(postIndex + 1)
-    val prevPost = posts lift(postIndex - 1)
+    val nextPost = posts.lift(postIndex + 1)
+    val prevPost = posts.lift(postIndex - 1)
 
     Ok(views.html.blog.single.render(post, prevPost, nextPost))
   }

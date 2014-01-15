@@ -8,9 +8,7 @@ import util.BlogDB
 class  CouchDbRepoSupport[T](clazz: Class[T], db: CouchDbConnector)
   extends CouchDbRepositorySupport[T](clazz, db: CouchDbConnector, clazz.getSimpleName.toLowerCase) {
 
-  def all = {
-    super.getAll().asScala.toList
-  }
+  def all = super.getAll.asScala
 
   def view(viewName: String) = {
     db.queryView(createQuery(viewName).includeDocs(true), clazz).asScala

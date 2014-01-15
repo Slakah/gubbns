@@ -1,3 +1,4 @@
 @(raw: String)
 @import play.utils.UriEncoding
-@(UriEncoding.encodePathSegment(raw replaceAll(" ", "-") toLowerCase, "utf-8"))
+@* Convert text to url freindly version http://en.wikipedia.org/wiki/Clean_URL *@
+@(UriEncoding.encodePathSegment(raw.replaceAll(" ", "-").toLowerCase, "utf-8"))

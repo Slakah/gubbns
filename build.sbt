@@ -10,7 +10,8 @@ libraryDependencies ++= Seq(
   "org.ektorp" % "org.ektorp" % "1.4.1",
   "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.3.0",
   "com.fasterxml.jackson.datatype" % "jackson-datatype-joda" % "2.3.0",
-  "org.apache.httpcomponents" % "httpclient" % "4.3.1"
+  "org.apache.httpcomponents" % "httpclient" % "4.3.1",
+  "org.pegdown" % "pegdown" % "1.4.2"
 )
 
 playScalaSettings

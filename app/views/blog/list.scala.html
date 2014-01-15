@@ -1,6 +1,6 @@
-@(posts: Iterable[Post])
+@(posts: Seq[Post])
 @main("Blog") {
-@posts.map { post =>
+@posts.reverseMap { post =>
     @blog_post(post)
 }
 }
