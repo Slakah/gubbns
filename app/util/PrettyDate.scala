@@ -5,14 +5,35 @@ import org.joda.time.format.{DateTimeFormat, PeriodFormatterBuilder, PeriodForma
 
 object PrettyDate {
   private val dashDateFormat = DateTimeFormat.forPattern("dd-MM-yyyy")
+  
+  // The threshold where absolute dates will be used instead of a relative time
+  private val LONG_DATE_THRESHOLD = Days.days(5).toStandardDuration
 
+  /**
+   * When the difference between the supplied date and now is greater
+   * than [[util.PrettyDate.LONG_DATE_THRESHOLD]] apply the date format
+   * dd-MM-yyyy to the supplied date.
+   *
+   * When less than the threshold round to the significant time field
+   * as per [[util.PrettyDate.printRelativeTime()]], unless less than
+   * one second where "recently" will be used
+   */
   def print(date: DateTime) = {
-    val isToday = LocalDate.now.isEqual(date.toLocalDate)
-    isToday match {
-      // Print 
-      case true => printRelativeTime(date)
-      // Print date as dd-MM-yyyy format
-      case false => dashDateFormat.print(date)
+    val isDateInPast = date.isBeforeNow
+    val timeFromNow = isDateInPast match {
+      case true => new Duration(date, DateTime.now)
+      case false => new Duration(DateTime.now, date)
+    }
+    
+    val withinThreshold = timeFromNow.isShorterThan(LONG_DATE_THRESHOLD)
+    if (withinThreshold) {
+      if (timeFromNow.isShorterThan(Seconds.ONE.toStandardDuration)) {
+        "recently"
+      } else {
+        printRelativeTime(timeFromNow.toPeriod, isDateInPast)
+      }
+    } else {
+      dashDateFormat.print(date)
     }
   }
 
@@ -20,48 +41,78 @@ object PrettyDate {
    * Format the relative time from the present
    * < 1s -> "recently"
    * 2h 30m in the past -> "2 hours ago"
-   * 32m in the future -> "32 minutes in the future"
+   * 32m in the future -> "in 32 minutes"
    * etc.
-   * @param date
-   * @return
    */
-  private def printRelativeTime(date: DateTime) = {
-    val isDateInPast = date.isBeforeNow
-
-    val timeFromNow = isDateInPast match {
-      case true => new Duration(date, DateTime.now)
-      case false => new Duration(DateTime.now, date)
-    }
-    val durationFromNow = timeFromNow.toDuration
-    if (durationFromNow.isShorterThan(Seconds.ONE.toStandardDuration)) {
-      "recently"
+  private def printRelativeTime(period: Period, isDateInPast: Boolean) = {
+    val discreteDuration = roundToSignificantField(period.toPeriod)
+    val relativeTime = printDurationWithUnits(discreteDuration)
+    if  (isDateInPast) {
+      f"$relativeTime ago"
     } else {
-      val discreteDuration = significantTimeUnit(durationFromNow)
-      val durationWithUnits = printDurationWithUnits(discreteDuration)
-      isDateInPast match {
-         case true => f"$durationWithUnits%s ago"
-         // Probably not needed
-         case false => f"$durationWithUnits%s in the future"
-      }
+      f"in $relativeTime"
     }
   }
+  
 
   /**
-   * Return the significant time unit, i.e.
+   * Return the duration rounded to the nearest significant time field, i.e.
+   * 3d 11h -> 3d
+   * 2d 12h -> 3d
    * 2h 15m 30s -> 2h
-   * 15m 50s -> 15m
+   * 2h 30m -> 3h
+   * 15m 29s -> 15m
    * 26s -> 26s
-   * @param duration
+   * 56s -> 56s
+   *
+   * Corner case:
+   * 23h 30m -> 1d
+   * 23h 29m -> 23h
+   */
+  private def roundToSignificantField(period: Period) = {
+    if (roundDays(period) > 0) Days.days(roundDays(period))
+    else if (roundHours(period) > 0) Hours.hours(roundHours(period))
+    else if (roundMinutes(period) > 0) Minutes.minutes(roundMinutes(period))
+    else period.toStandardSeconds
+  }
+
+  private def roundDays(period: Period) =
+    roundTimeField(period.getDays, roundHours(period),
+      Days.ONE.toStandardHours.getHours)
+
+  private def roundHours(period: Period) =
+    roundTimeField(period.getHours, roundMinutes(period),
+      Hours.ONE.toStandardMinutes.getMinutes)
+
+  private def roundMinutes(period: Period) =
+    roundTimeField(period.getMinutes, period.getSeconds,
+      Minutes.ONE.toStandardSeconds.getSeconds)
+
+
+  /**
+   * An additional field of time will be added to field when
+   * lesserField / conversionFactor > 0.5
+   * With the additional rule that if field is 0 a partial field can only
+   * increment field when the partial field is a full field.
+   * This stops 30m from rounding to 1h
+   * @param field full field of time
+   * @param lesserField partial field of time
+   * @param conversionFactor The factor required to convert lesserField into field
    * @return
    */
-  private def significantTimeUnit(duration: Duration): ReadablePeriod = {
-    if (duration.getStandardHours > 0) duration.toStandardHours
-    else if (duration.getStandardMinutes > 0) duration.toStandardMinutes
-    else duration.toStandardSeconds
+  private def roundTimeField(field: Int, lesserField: Int, conversionFactor: Int) = {
+    if (field == 0) {
+      if (lesserField == conversionFactor) {
+        field + 1
+      } else {
+        0
+      }
+    } else math.round(field + (lesserField.toDouble / conversionFactor)).toInt
   }
 
   private def printDurationWithUnits(period: ReadablePeriod) = {
-    val fmt: PeriodFormatter = new PeriodFormatterBuilder()
+    lazy val fmt: PeriodFormatter = new PeriodFormatterBuilder()
+      .appendDays().appendSuffix(" day", " days")
       .appendHours.appendSuffix(" hour", " hours")
       .appendMinutes.appendSuffix(" minute", " minutes")
       .appendSeconds.appendSuffix(" second", " seconds")

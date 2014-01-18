@@ -1,6 +1,6 @@
 package app.util
 
-import org.junit.{Before, Test}
+import org.junit.Test
 import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import org.joda.time.{DateTime, DateTimeUtils}
@@ -9,38 +9,38 @@ import util.PrettyDate
 class PrettyDateTest {
 
   @Test
-  def futureDate {
+  def futureOneDay {
     DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01").getMillis)
     assertThat(PrettyDate.print(DateTime.parse("2010-08-02")),
-      equalTo("02-08-2010"));
+      equalTo("in 1 day"));
   }
 
   @Test
-  def pastDate {
+  def pastOneDay {
     DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01").getMillis)
-    assertThat(PrettyDate.print(DateTime.parse("2010-07-31T23:59")),
-      equalTo("31-07-2010"));
+    assertThat(PrettyDate.print(DateTime.parse("2010-07-31")),
+      equalTo("1 day ago"));
   }
 
   @Test
   def futureEndDay {
     DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01").getMillis)
-    assertThat(PrettyDate.print(DateTime.parse("2010-08-01T23:59")),
-      equalTo("23 hours in the future"));
+    assertThat(PrettyDate.print(DateTime.parse("2010-08-01T23:30")),
+      equalTo("in 1 day"));
   }
 
   @Test
   def pastStartDay {
-    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01T23:59").getMillis)
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01T23:30").getMillis)
     assertThat(PrettyDate.print(DateTime.parse("2010-08-01")),
-      equalTo("23 hours ago"));
+      equalTo("1 day ago"));
   }
 
   @Test
   def futureOneHour {
     DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01").getMillis)
     assertThat(PrettyDate.print(DateTime.parse("2010-08-01T01:00")),
-      equalTo("1 hour in the future"));
+      equalTo("in 1 hour"));
   }
 
   @Test
@@ -51,9 +51,44 @@ class PrettyDateTest {
   }
 
   @Test
-  def pastOneHourThirtyMin {
+  def pastOneHourThirtyMinutes {
     DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01T05:00").getMillis)
     assertThat(PrettyDate.print(DateTime.parse("2010-08-01T03:30")),
+      equalTo("2 hours ago"));
+  }
+
+  @Test
+  def pastThirtySeconds {
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01T05:00").getMillis)
+    assertThat(PrettyDate.print(DateTime.parse("2010-08-01T04:59:30")),
+      equalTo("30 seconds ago"));
+  }
+
+  @Test
+  def past59Min29Sec {
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01T05:00").getMillis)
+    assertThat(PrettyDate.print(DateTime.parse("2010-08-01T04:00:31")),
+      equalTo("59 minutes ago"));
+  }
+
+  @Test
+  def past59Min30Sec {
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01T05:00").getMillis)
+    assertThat(PrettyDate.print(DateTime.parse("2010-08-01T04:00:30")),
       equalTo("1 hour ago"));
+  }
+
+  @Test
+  def pastLessThanOneSeconds {
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01T05:00").getMillis)
+    assertThat(PrettyDate.print(DateTime.parse("2010-08-01T05:00").minusMillis(1)),
+      equalTo("recently"));
+  }
+
+  @Test
+  def futureLessThanOneSeconds {
+    DateTimeUtils.setCurrentMillisFixed(DateTime.parse("2010-08-01T05:00").getMillis)
+    assertThat(PrettyDate.print(DateTime.parse("2010-08-01T05:00").plusMillis(1)),
+      equalTo("recently"));
   }
 }
