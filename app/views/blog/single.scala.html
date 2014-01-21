@@ -1,7 +1,7 @@
 @(post: Post, prevPost: Option[Post], nextPost: Option[Post])
 
 @blogLink(toLink: Post) = {
-<a href="/blog/@encode_uri(toLink.title)">@toLink.title</a>
+<a href="/blog/@slugify(toLink.title)">@toLink.title</a>
 }
 @main(post.title) {
     @blog_post(post)

@@ -46,10 +46,11 @@ object Blog extends Controller {
 
   def submit() = Action {implicit request =>
     val (title, content) = loginForm.bindFromRequest().get
-    val post = Post(UUID.randomUUID().toString, null, "post", title, content, DateTime.now, "James Collier")
-    Logger.info(post._id)
-    val jsonPost = BlogDB.mapper.writeValueAsString(post)
-    Logger.info("saving post." + post.title)
+    val post = Post(null, null, "post", title, content, DateTime.now, "James Collier");
+
+    Logger.info("Saving JSON : "+BlogDB.mapper.writeValueAsString(post))
+
+    //postRepo.add(post)
     postRepo.add(post)
 
     Ok("saved")

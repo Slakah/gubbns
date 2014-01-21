@@ -11,4 +11,4 @@ case class Post(
   @JsonProperty("content") content: String,
   @JsonProperty("published") published: DateTime,
   @JsonProperty("author") author: String
-)
+) extends CouchDocument

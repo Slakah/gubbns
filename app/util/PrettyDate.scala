@@ -7,11 +7,11 @@ object PrettyDate {
   private val dashDateFormat = DateTimeFormat.forPattern("dd-MM-yyyy")
   
   // The threshold where absolute dates will be used instead of a relative time
-  private val LONG_DATE_THRESHOLD = Days.days(5).toStandardDuration
+  val DateThreshold = Weeks.weeks(2)
 
   /**
    * When the difference between the supplied date and now is greater
-   * than [[util.PrettyDate.LONG_DATE_THRESHOLD]] apply the date format
+   * than [[util.PrettyDate.DateThreshold]] apply the date format
    * dd-MM-yyyy to the supplied date.
    *
    * When less than the threshold round to the significant time field
@@ -19,21 +19,25 @@ object PrettyDate {
    * one second where "recently" will be used
    */
   def print(date: DateTime) = {
-    val isDateInPast = date.isBeforeNow
-    val timeFromNow = isDateInPast match {
-      case true => new Duration(date, DateTime.now)
-      case false => new Duration(DateTime.now, date)
+    val now = DateTime.now
+
+    val isDateInPast = date.isBefore(now)
+    val dateFromNow = isDateInPast match {
+      case true => new Interval(date, now)
+      case false => new Interval(now, date)
     }
+    val thresholdInterval = new Interval(now.minus(DateThreshold), now.plus(DateThreshold))
+    val withinThreshold = thresholdInterval.contains(date)
     
-    val withinThreshold = timeFromNow.isShorterThan(LONG_DATE_THRESHOLD)
     if (withinThreshold) {
-      if (timeFromNow.isShorterThan(Seconds.ONE.toStandardDuration)) {
+      if (dateFromNow.toDuration.isShorterThan(Seconds.ONE.toStandardDuration)) {
         "recently"
       } else {
-        printRelativeTime(timeFromNow.toPeriod, isDateInPast)
+        printRelativeTime(dateFromNow.toPeriod, isDateInPast)
       }
     } else {
-      dashDateFormat.print(date)
+      val dashDate = dashDateFormat.print(date)
+      f"on $dashDate"
     }
   }
 
@@ -69,12 +73,18 @@ object PrettyDate {
    * 23h 30m -> 1d
    * 23h 29m -> 23h
    */
-  private def roundToSignificantField(period: Period) = {
-    if (roundDays(period) > 0) Days.days(roundDays(period))
+  private def roundToSignificantField(nonNormalisedPeriod: Period) = {
+    val period = nonNormalisedPeriod.normalizedStandard
+    if (roundWeeks(period) > 0) Weeks.weeks(roundWeeks(period))
+    else if (roundDays(period) > 0) Days.days(roundDays(period))
     else if (roundHours(period) > 0) Hours.hours(roundHours(period))
     else if (roundMinutes(period) > 0) Minutes.minutes(roundMinutes(period))
     else period.toStandardSeconds
   }
+
+  private def roundWeeks(period: Period) =
+    roundTimeField(period.getWeeks, roundDays(period),
+      Weeks.ONE.toStandardDays.getDays)
 
   private def roundDays(period: Period) =
     roundTimeField(period.getDays, roundHours(period),
@@ -91,28 +101,30 @@ object PrettyDate {
 
   /**
    * An additional field of time will be added to field when
-   * lesserField / conversionFactor > 0.5
-   * With the additional rule that if field is 0 a partial field can only
+   * fractionalField / conversionFactor > 0.5
+   * With the additional rule that if field is 0 a fractional field can only
    * increment field when the partial field is a full field.
    * This stops 30m from rounding to 1h
    * @param field full field of time
-   * @param lesserField partial field of time
-   * @param conversionFactor The factor required to convert lesserField into field
+   * @param fractionalField partial field of time
+   * @param conversionFactor The factor required to convert fractionalField into field
    * @return
    */
-  private def roundTimeField(field: Int, lesserField: Int, conversionFactor: Int) = {
+  private def roundTimeField(field: Int, fractionalField: Int, conversionFactor: Int) = {
     if (field == 0) {
-      if (lesserField == conversionFactor) {
+      if (fractionalField == conversionFactor) {
+        // Could use math.round, but this is equivalent because fractionalField == conversionFactor
         field + 1
       } else {
         0
       }
-    } else math.round(field + (lesserField.toDouble / conversionFactor)).toInt
+    } else math.round(field + (fractionalField.toDouble / conversionFactor)).toInt
   }
 
   private def printDurationWithUnits(period: ReadablePeriod) = {
     lazy val fmt: PeriodFormatter = new PeriodFormatterBuilder()
-      .appendDays().appendSuffix(" day", " days")
+      .appendWeeks.appendSuffix(" week", " weeks")
+      .appendDays.appendSuffix(" day", " days")
       .appendHours.appendSuffix(" hour", " hours")
       .appendMinutes.appendSuffix(" minute", " minutes")
       .appendSeconds.appendSuffix(" second", " seconds")

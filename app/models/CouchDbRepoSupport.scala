@@ -3,6 +3,7 @@ package models
 import org.ektorp.CouchDbConnector
 import org.ektorp.support.CouchDbRepositorySupport
 import scala.collection.JavaConverters._
+import java.util.UUID
 import util.BlogDB
 
 class  CouchDbRepoSupport[T](clazz: Class[T], db: CouchDbConnector)
@@ -18,7 +19,8 @@ class  CouchDbRepoSupport[T](clazz: Class[T], db: CouchDbConnector)
     db.queryView(createQuery(viewName).designDocId(stdDesignDocumentId).includeDocs(true).key(key), clazz).asScala
   }
 
-  override def add(doc: T) {
-    BlogDB.db.create(doc)
+  def create() = {
+    BlogDB.db.create(UUID.randomUUID.toString, clazz)
   }
+
 }

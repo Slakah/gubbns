@@ -5,6 +5,8 @@ import org.ektorp.impl.{StdCouchDbInstance, StdObjectMapperFactory}
 import com.fasterxml.jackson.databind.{ObjectMapper}
 import com.fasterxml.jackson.datatype.joda.JodaModule
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import org.ektorp.util.Documents
+import models.Post
 
 object BlogDB {
   private val httpClient  = new StdHttpClient.Builder()
@@ -13,10 +15,14 @@ object BlogDB {
   private val objectMapperFactory = new StdObjectMapperFactory
   val mapper = new ObjectMapper
 
-  mapper registerModule(new JodaModule)
+  mapper.registerModule(new JodaModule)
+  mapper.registerModule(DefaultScalaModule)
 
-  objectMapperFactory setObjectMapper(mapper)
+  objectMapperFactory.setObjectMapper(mapper)
 
   private val dbInstance = new StdCouchDbInstance(httpClient, objectMapperFactory)
   val db = dbInstance.createConnector("blog", true)
+
+
+  Documents.registerAccessor(classOf[Post], new JacksonDocumentAccessor)
 }
