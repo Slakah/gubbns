@@ -1,10 +1,9 @@
-package app.util
+package util
 
 import org.junit.Test
 import org.junit.Assert.assertThat
 import org.hamcrest.CoreMatchers.equalTo
 import org.joda.time.{DateTime, DateTimeUtils}
-import util.PrettyDate
 
 class PrettyDateTest {
 

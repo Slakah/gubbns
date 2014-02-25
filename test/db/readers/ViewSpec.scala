@@ -19,12 +19,12 @@ class ViewSpec extends Specification {
                                {
                                    "id": "SpaghettiWithMeatballs",
                                    "key": "spaghetti",
-                                   "value": 1
+                                   "value": 6
                                },
                                {
                                    "id": "SpaghettiWithMeatballs",
                                    "key": "tomato sauce",
-                                   "value": 1
+                                   "value": 4
                                }
                            ],
                            "total_rows": 3
@@ -37,27 +37,20 @@ class ViewSpec extends Specification {
 
       testView.rows.size should equalTo(3)
 
-      val row1 = testView.rows(0)
-      row1 should equalTo(Json.obj(
-        "id" -> "SpaghettiWithMeatballs",
-        "key" -> "meatballs",
-        "value" -> 1
-      ))
+      testView.rows(0) should equalTo(
+        ViewRow(id = "SpaghettiWithMeatballs",
+          key = JsString("meatballs"),
+          value = JsNumber(1)))
 
-      val row2 = testView.rows(1)
-      row2 should equalTo(Json.obj(
-        "id" -> "SpaghettiWithMeatballs",
-        "key" -> "spaghetti",
-        "value" -> 1
-      ))
+      testView.rows(1) should equalTo(
+        ViewRow(id = "SpaghettiWithMeatballs",
+          key = JsString("spaghetti"),
+          value = JsNumber(6)))
 
-      val row3 = testView.rows(2)
-      row3 should equalTo(Json.obj(
-        "id" -> "SpaghettiWithMeatballs",
-        "key" -> "tomato sauce",
-        "value" -> 1
-      ))
-
+      testView.rows(2) should equalTo(
+        ViewRow(id = "SpaghettiWithMeatballs",
+          key = JsString("tomato sauce"),
+          value = JsNumber(4)))
     }
   }
 }

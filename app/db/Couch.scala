@@ -26,6 +26,5 @@ class Couch extends ConfigService with WebService {
   private def databaseRequest(dbName: DatabaseName): RequestHolder = {
     couchBaseRequest.append(dbName.toString)
   }
-
 }
 

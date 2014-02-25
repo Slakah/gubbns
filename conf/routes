@@ -7,8 +7,8 @@ GET     /                      controllers.Home.index()
 
 # Blog
 GET     /blog                       controllers.Blog.index()
-POST    /blog                       controllers.Blog.submit()
-GET     /blog/add                   controllers.Blog.add()
+#POST    /blog                       controllers.Blog.submit()
+#GET     /blog/add                   controllers.Blog.add()
 GET     /blog/:title                controllers.Blog.title(title: String)
 
 

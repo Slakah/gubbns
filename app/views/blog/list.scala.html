@@ -1,6 +1,6 @@
-@(posts: Seq[Post])
+@(posts: List[Post])
 @main("Blog") {
 @posts.reverseMap { post =>
-    @blog_post(post)
+@blog_post(post)
 }
 }
