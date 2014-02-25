@@ -7,6 +7,8 @@ import models.PostFormat.postFormats
 import play.api.libs.concurrent.Execution.Implicits._
 import db.readers.View
 
+import db.readers.ViewRead.viewReads
+
 
 trait PostRepositoryComponent {
   this: CouchBlogServiceComponent =>
@@ -31,11 +33,8 @@ trait PostRepositoryComponent {
 
     override def getAll: Future[List[Post]] =
       couchBlog.postDesign.view("all").map(response =>
-        response.json.as[View]).map(view =>
-        view.rows.map(postRow => postRow.value.as[Post]
-        )
-        )
-
+        response.json.as[View].rows.map(postRow => postRow.value.as[Post])
+      )
   }
 
 }
