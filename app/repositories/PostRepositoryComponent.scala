@@ -8,6 +8,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import db.readers.View
 
 import db.readers.ViewRead.viewReads
+import util.Slugify
 
 
 trait PostRepositoryComponent {
@@ -27,7 +28,7 @@ trait PostRepositoryComponent {
     // TODO Change to use the set up couchdb view function
     override def findByTitle(name: String): Future[Option[Post]] =
       getAll.map(allPosts =>
-        allPosts.find(_.title.equalsIgnoreCase(name.replace("-", " ")))
+        allPosts.find(post => Slugify.slugify(post.title).equalsIgnoreCase(name))
       )
 
 

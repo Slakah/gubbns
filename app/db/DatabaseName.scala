@@ -5,7 +5,7 @@ case class DatabaseName private(dbName: String) {
 }
 
 object DatabaseName {
-  def valueOf(dbName: String): DatabaseName = {
+  def fromString(dbName: String): DatabaseName = {
     val validName = """^([a-z][a-z0-9_$()+/-]*)$""".r
     dbName match {
       case validName(name) => new DatabaseName(escapeSlash(name))
@@ -17,7 +17,7 @@ object DatabaseName {
   private def escapeSlash(s: String) = s.replaceAllLiterally("/", "%2F2")
 
   implicit class StringWithToDatabaseName(dbString: String) {
-    def asDatabaseName: DatabaseName = valueOf(dbString)
+    def asDatabaseName: DatabaseName = fromString(dbString)
   }
 
 }

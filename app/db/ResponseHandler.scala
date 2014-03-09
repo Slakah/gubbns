@@ -6,15 +6,17 @@ import db.readers.{CouchError, CouchErrorRead}
 import CouchErrorRead._
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
+import play.Logger
+
 
 case class CouchDbRequestException(reason: String) extends RuntimeException
 
 object ResponseHandler {
   def validate(response: Response): Either[String, Response] = {
     val status = response.status
-    if (status < 400)
+    if (status < 400) {
       Right(response)
-    else {
+    } else {
       val errorMessage = errorFromJson(response.json)
         .getOrElse( """CouchDB request failed with status "$response.statusText" code $response.status """)
 
@@ -41,7 +43,9 @@ object ResponseHandler {
         response =>
           ResponseHandler.validate(response) match {
             case Right(validResponse) => validResponse
-            case Left(errorMsg) => throw new CouchDbRequestException(errorMsg)
+            case Left(errorMsg) => {
+              throw new CouchDbRequestException(errorMsg)
+            }
           }
       }
     }

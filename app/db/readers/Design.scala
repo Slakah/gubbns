@@ -21,7 +21,9 @@ object ViewFunctionFormat {
 
   private val listViewFunctionWrites: Writes[List[ViewFunction]] = Writes({
     viewFuncs =>
-      def fieldWithJsFunctions(viewFunc: ViewFunction) = (viewFunc.name, Json.obj("map" -> viewFunc.map, "reduce" -> viewFunc.reduce))
+      def fieldWithJsFunctions(viewFunc: ViewFunction) = {
+        (viewFunc.name, Json.obj("map" -> viewFunc.map, "reduce" -> viewFunc.reduce))
+      }
 
       JsObject(viewFuncs.toSeq.map(fieldWithJsFunctions))
   })
@@ -31,7 +33,7 @@ object ViewFunctionFormat {
 }
 
 
-case class Design(id: String, rev: Option[String], language: String = "javascript", views: List[ViewFunction])
+case class Design(id: String, rev: Option[String] = None, language: String = "javascript", views: List[ViewFunction])
 
 object DesignFormat {
 
@@ -40,7 +42,7 @@ object DesignFormat {
 
   implicit val designFormats: Format[Design] = (
     (__ \ "_id").format[String] and
-      (__ \ "_rev").format[Option[String]] and
+      (__ \ "_rev").formatNullable[String] and
       (__ \ "language").format[String] and
       (__ \ "views").format[List[ViewFunction]]
     )(Design, unlift(Design.unapply))
