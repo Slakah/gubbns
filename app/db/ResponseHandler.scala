@@ -9,7 +9,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.Logger
 
 
-case class CouchDbRequestException(reason: String) extends RuntimeException
+case class CouchDbRequestException(message: String) extends RuntimeException(message)
 
 object ResponseHandler {
   def validate(response: Response): Either[String, Response] = {
@@ -43,9 +43,7 @@ object ResponseHandler {
         response =>
           ResponseHandler.validate(response) match {
             case Right(validResponse) => validResponse
-            case Left(errorMsg) => {
-              throw new CouchDbRequestException(errorMsg)
-            }
+            case Left(errorMsg) => throw new CouchDbRequestException(errorMsg)
           }
       }
     }
