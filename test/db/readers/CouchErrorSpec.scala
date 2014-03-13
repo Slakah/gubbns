@@ -17,5 +17,13 @@ class CouchErrorSpec extends Specification {
       val expectedError = CouchError(error = "not_found", reason = "deleted")
       couchError must equalTo(expectedError)
     }
+
+    "read bad design doc error" in {
+      val errorJson = Json.parse("""{"error":"compilation_error","reason":"OH NOES"}""")
+      val couchError = errorJson.as[CouchError]
+
+      val expectedError = CouchError(error = "compilation_error", reason = """OH NOES""")
+      couchError must equalTo(expectedError)
+    }
   }
 }

@@ -2,38 +2,49 @@ package db.readers
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import play.api.libs.json.JsSuccess
+import play.api.libs.json.JsObject
+import scala.Some
 
 
 case class ViewFunction(name: String, map: Option[String] = None, reduce: Option[String] = None)
 
 object ViewFunctionFormat {
-  private val listViewFunctionReads: Reads[List[ViewFunction]] = Reads({
+  private val listViewFunctionReads: Reads[Set[ViewFunction]] = Reads({
     js =>
-      val jsViewFunc = js.as[JsObject].fieldSet.toList.map(jsViewFunc =>
+      val jsonViewFuncs: Set[(String, JsValue)] = js.as[JsObject].fieldSet.toSet
+      val viewFuncs: Set[ViewFunction] = jsonViewFuncs.map(jsonViewFunc =>
         ViewFunction(
-          name = jsViewFunc._1,
-          map = (jsViewFunc._2 \ "map").asOpt[String],
-          reduce = (jsViewFunc._2 \ "reduce").asOpt[String]
+          name = jsonViewFunc._1,
+          map = (jsonViewFunc._2 \ "map").asOpt[String],
+          reduce = (jsonViewFunc._2 \ "reduce").asOpt[String]
         )
       )
-      JsSuccess(jsViewFunc)
+      JsSuccess(viewFuncs)
   })
 
-  private val listViewFunctionWrites: Writes[List[ViewFunction]] = Writes({
+  private val listViewFunctionWrites: Writes[Set[ViewFunction]] = Writes({
     viewFuncs =>
-      def fieldWithJsFunctions(viewFunc: ViewFunction) = {
-        (viewFunc.name, Json.obj("map" -> viewFunc.map, "reduce" -> viewFunc.reduce))
+      def nameWithJsFunctions(viewFunc: ViewFunction) = {
+        import Json.toJson
+        def filterNoneViews(view: (String, Option[String])): Option[(String, JsValue)] = view match {
+          case (name, Some(viewFunc)) => Some(name, toJson(viewFunc))
+          case (name, None) => None
+        }
+
+        val validViews: Seq[(String, JsValue)] = Seq(("map", viewFunc.map), ("reduce", viewFunc.reduce)).flatMap(filterNoneViews)
+        (viewFunc.name, JsObject(validViews))
       }
 
-      JsObject(viewFuncs.toSeq.map(fieldWithJsFunctions))
+      JsObject(viewFuncs.toSeq.map(nameWithJsFunctions))
   })
 
-  implicit val listViewFunctionFormat: Format[List[ViewFunction]] = Format(listViewFunctionReads, listViewFunctionWrites)
+  implicit val listViewFunctionFormat: Format[Set[ViewFunction]] = Format(listViewFunctionReads, listViewFunctionWrites)
 
 }
 
 
-case class Design(id: String, rev: Option[String] = None, language: String = "javascript", views: List[ViewFunction])
+case class Design(id: String, rev: Option[String] = None, language: String = "javascript", views: Set[ViewFunction])
 
 object DesignFormat {
 
@@ -44,6 +55,6 @@ object DesignFormat {
     (__ \ "_id").format[String] and
       (__ \ "_rev").formatNullable[String] and
       (__ \ "language").format[String] and
-      (__ \ "views").format[List[ViewFunction]]
+      (__ \ "views").format[Set[ViewFunction]]
     )(Design, unlift(Design.unapply))
 }

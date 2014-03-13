@@ -10,19 +10,26 @@ import db.readers.{ViewFunction, Design}
 import play.api.libs.json.Json
 
 object BlogStructure {
+
+  val postDesign = Design(id = "post", views = Set(
+    ViewFunction(name = "all", map = Some("function(doc) {if (doc.type===\"post\") {emit(doc.published, doc);}}")),
+    ViewFunction(name = "by_title", map = Some("function(doc) {if (doc.type===\"post\") {emit(encodeURI(doc.title.toLowerCase().replace(/\\s+/g, \"-\")), doc);}}"))
+  ))
+
   val blogStructure = CouchStructure(
-    List(
+    Set(
       DatabaseStructure(dbName = "blog".asDatabaseName,
-        designs = List(DesignStructure("post",
-          Json.prettyPrint(Json.toJson(Design(id = "post", views = List(ViewFunction(name = "all", map = Some("function(doc) {if (doc.type=\"post\") {emit(doc.published, doc);}}"))))))
+        designs = Set(DesignStructure("post",
+          Json.prettyPrint(Json.toJson(postDesign))
         ))
       )
     )
   )
+
 }
 
 class BlogCouchSync extends GlobalSettings {
-  val couchSync = new CouchSync with Default
+  val couchSync = new CouchSync with PlayCouch
 
   override def onStart(app: Application) {
     Logger.info("Creating couch blog db structure")

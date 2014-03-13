@@ -59,12 +59,11 @@ class DesignSpec extends Specification {
                                     }
                                   }""")
 
-      val viewFunctions = designJson.as[List[ViewFunction]]
-      val viewFunction = viewFunctions(0)
+      val expectedViewFunction = ViewFunction(name = "all", reduce = None,
+        map = Some("function(doc) { if (doc.Type == 'customer')  emit(null, doc) }"))
 
-      viewFunction.name must equalTo("all")
-      viewFunction.reduce must equalTo(None)
-      viewFunction.map must equalTo(Some("function(doc) { if (doc.Type == 'customer')  emit(null, doc) }"))
+      designJson.as[Set[ViewFunction]] must equalTo(Set[ViewFunction](expectedViewFunction))
+
     }
 
     "parse view function map and reduce json" in {
@@ -74,13 +73,9 @@ class DesignSpec extends Specification {
                                       "reduce": "function(keys, values) { return sum(values) }"
                                     }
                                   }""")
-
-      val viewFunctions = designJson.as[List[ViewFunction]]
-      val viewFunction = viewFunctions(0)
-
-      viewFunction.name must equalTo("total_purchases")
-      viewFunction.map must equalTo(Some("function(doc) { if (doc.Type == 'purchase')  emit(doc.Customer, doc.Amount) }"))
-      viewFunction.reduce must equalTo(Some("function(keys, values) { return sum(values) }"))
+      val expectedViewFunction = ViewFunction(name = "total_purchases", reduce = Some("function(keys, values) { return sum(values) }"),
+        map = Some("function(doc) { if (doc.Type == 'purchase')  emit(doc.Customer, doc.Amount) }"))
+      designJson.as[Set[ViewFunction]] must equalTo(Set[ViewFunction](expectedViewFunction))
 
     }
   }

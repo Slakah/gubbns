@@ -8,10 +8,13 @@ import play.Logger
 
 case class DesignStructure(name: String, json: String)
 
-case class DatabaseStructure(dbName: DatabaseName, designs: List[DesignStructure])
+case class DatabaseStructure(dbName: DatabaseName, designs: Set[DesignStructure])
 
-case class CouchStructure(databases: List[DatabaseStructure])
+case class CouchStructure(databases: Set[DatabaseStructure])
 
+/**
+ * Used to sync a proposed couch structure with the couchdb instance
+ */
 trait CouchSync extends CouchServiceComponent {
   val couch = new Couch() with PlayConfigService with WSWebService
 
@@ -21,21 +24,21 @@ trait CouchSync extends CouchServiceComponent {
    * @return
    */
   def sync(structure: CouchStructure): Future[Unit] = {
-    val createStructures: List[Future[Unit]] = structure.databases.map({dbStructure =>
+    val createStructures: Set[Future[Unit]] = structure.databases.map({dbStructure =>
       val database = couch.database(dbStructure.dbName)
       database.createIfNoneExist.andThen({case Success(_) => createDesignsIfNoneExist(database, dbStructure.designs)})
     })
     foldFutures(createStructures)
   }
 
-  private def createDesignsIfNoneExist(database: Database, designs: List[DesignStructure]): Future[Unit] = {
-    val createDesigns: List[Future[Unit]] = designs.map({(design: DesignStructure) =>
+  private def createDesignsIfNoneExist(database: Database, designs: Set[DesignStructure]): Future[Unit] = {
+    val createDesigns: Set[Future[Unit]] = designs.map({(design: DesignStructure) =>
       database.databaseDesign(design.name).createIfNoneExist(design.json)
     })
     foldFutures(createDesigns)
   }
 
-  private def foldFutures(futures: Seq[Future[Unit]]): Future[Unit] = {
+  private def foldFutures(futures: TraversableOnce[Future[Unit]]): Future[Unit] = {
     futures.foldLeft(Future[Unit]())({(f1, f2) => for {
         r1 <- f1
         r2 <- f2
