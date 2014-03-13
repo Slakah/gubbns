@@ -8,7 +8,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 import db.readers.View
 
 import db.readers.ViewRead.viewReads
-import util.Slugify
+import db.ViewQuery
 
 
 trait PostRepositoryComponent {
@@ -24,12 +24,14 @@ trait PostRepositoryComponent {
 
 
   class CouchPosts extends PostRepository {
+    import util.Slugify.slugify
 
-    // TODO Change to use the set up couchdb view function
-    override def findByTitle(name: String): Future[Option[Post]] =
-      getAll.map(allPosts =>
-        allPosts.find(post => Slugify.slugify(post.title).equalsIgnoreCase(name))
+    override def findByTitle(rawTitle: String): Future[Option[Post]] = {
+      val slugTitle = slugify(rawTitle)
+      couchBlog.postDesign.view("by_title", ViewQuery(key=Some(s""""$slugTitle""""))).map(response =>
+        response.json.as[View].rows.map(postRow => postRow.value.as[Post]).lift(0)
       )
+    }
 
 
     override def getAll: Future[List[Post]] =
