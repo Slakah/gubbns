@@ -6,24 +6,12 @@ import play.api.libs.concurrent.Execution.Implicits._
 import db.ResponseHandler.FutureResponseWithValidate
 
 case class Database(dbRequest: RequestHolder) {
+  import db.RequestHelper.RequestHelper
 
-  def createIfNoneExist(): Future[Unit] = doesExist.collect({
-    case false => create()
-    case true => ()
-  })
 
-  def doesExist: Future[Boolean] = {
-    val databaseGet = dbRequest.get()
-    databaseGet.map({
-      response =>
-        response.status match {
-          case 404 => false
-          case 200 => true
-          case _ =>
-            throw new IllegalStateException( s"""Expected status code OK (200) or Not Found (404), got "${response.status}" """)
-        }
-    })
-  }
+  def createIfNoneExist(): Future[Unit] = dbRequest.ifNotExist(create)
+
+  def doesExist: Future[Boolean] = dbRequest.doesExist()
 
   def create(): Future[Response] = {
     val createRequest = dbRequest.put()

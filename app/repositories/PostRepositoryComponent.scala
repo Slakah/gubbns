@@ -9,6 +9,7 @@ import db.readers.View
 
 import db.readers.ViewRead.viewReads
 import db.ViewQuery
+import play.api.Logger
 
 
 trait PostRepositoryComponent {

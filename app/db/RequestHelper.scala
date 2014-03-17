@@ -1,10 +1,20 @@
-import db.RequestHolder
+package db
+import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits._
 
-package object RequestHelper {
-  implicit case class RequestHelper(request: RequestHolder) {
-    def doesExist = {
-      val requestGet = request.get()
-      requestGet.map({
+object RequestHelper {
+  implicit class RequestHelper(request: RequestHolder) {
+
+    def ifNotExist[A](f: () => Future[A]): Future[Unit] = {
+      doesExist.collect({
+          case false => f().map(_ => ())
+          case true => ()
+      })
+    }
+
+
+    def doesExist(): Future[Boolean] = {
+      request.get().map({
         response =>
           response.status match {
             case 404 => false

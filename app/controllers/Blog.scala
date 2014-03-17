@@ -3,6 +3,7 @@ package controllers
 import play.api.mvc.Action
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.None
+import play.api.Logger
 
 
 object Blog extends Application {

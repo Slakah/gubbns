@@ -2,6 +2,7 @@ package db
 
 import play.api.libs.ws.{Response, WS}
 import scala.concurrent.Future
+import play.api.Logger
 
 
 trait WebService {
@@ -12,6 +13,7 @@ trait WebService {
   def put(url: String): Future[Response] = this.put(url)
 
   def get(url: String): Future[Response] = this.get(url)
+
 
   def delete(url: String): Future[Response] = this.delete(url)
 }
