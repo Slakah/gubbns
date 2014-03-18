@@ -30,10 +30,16 @@ object BlogStructure {
 
 class BlogCouchSync extends GlobalSettings {
   val couchSync = new CouchSync with PlayCouch
+  import play.api.Mode
 
   override def onStart(app: Application) {
-    Logger.info("Creating couch blog db structure")
-    couchSync.sync(BlogStructure.blogStructure)
+    app.mode match {
+      case Mode.Test =>
+      case _ => {
+        Logger.info("Creating couch blog db structure")
+        couchSync.sync(BlogStructure.blogStructure)
+      }
+    }
   }
 }
 
