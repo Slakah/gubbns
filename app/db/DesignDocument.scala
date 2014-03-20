@@ -6,21 +6,30 @@ import db.ResponseHandler.FutureResponseWithValidate
 import play.api.libs.concurrent.Execution.Implicits._
 import java.net.URLEncoder
 import play.utils.UriEncoding
+import play.Logger
 
-
+/**
+ *
+ * @param key Should be a json encoded value
+ */
 case class ViewQuery(key: Option[String] = None) {
+
 
   def toQueryString: String = {
     if (queryParameters.isEmpty) return ""
 
-    val printParameter = (field: String, value: String) => s"$field=$value"
-    val rawQuery = queryParameters.map(printParameter.tupled).mkString("&")
-    UriEncoding.encodePathSegment(rawQuery, "utf-8")
+    val printQueryParameter = (field: String, value: String) => {
+      val encode = (s: String) => URLEncoder.encode(s, "utf-8")
+      s"${encode(field)}=${encode(value)}"
+    }
+
+    queryParameters.map(printQueryParameter.tupled).mkString("&")
   }
 
+
   private lazy val queryParameters: Map[String, String] = {
-    def queryIfExists[A](field: String, value: Option[A]) = {
-      value match {
+    def queryIfExists[A](field: String, opt: Option[A]) = {
+      opt match {
         case Some(value) => Seq((field, value))
         case None => Nil
       }

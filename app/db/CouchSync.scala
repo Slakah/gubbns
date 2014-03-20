@@ -32,13 +32,13 @@ trait CouchSync extends CouchServiceComponent {
   }
 
   private def createDesignsIfNoneExist(database: Database, designs: Set[DesignStructure]): Future[Unit] = {
-    val createDesigns: Set[Future[Unit]] = designs.map({(design: DesignStructure) =>
-      database.databaseDesign(design.name).createIfNoneExist(design.json)
+    val createDesigns: Set[Future[_]] = designs.map({(design: DesignStructure) =>
+      database.databaseDesign(design.name).createOrUpdate(design.json)
     })
     foldFutures(createDesigns)
   }
 
-  private def foldFutures(futures: TraversableOnce[Future[Unit]]): Future[Unit] = {
+  private def foldFutures(futures: TraversableOnce[Future[_]]): Future[Unit] = {
     futures.foldLeft(Future[Unit]())({(f1, f2) => for {
         r1 <- f1
         r2 <- f2

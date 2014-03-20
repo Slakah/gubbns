@@ -10,6 +10,7 @@ import db.readers.View
 import db.readers.ViewRead.viewReads
 import db.ViewQuery
 import play.api.Logger
+import play.api.libs.json.{Json, JsString}
 
 
 trait PostRepositoryComponent {
@@ -25,11 +26,11 @@ trait PostRepositoryComponent {
 
 
   class CouchPosts extends PostRepository {
-    import util.Slugify.slugify
 
     override def findByTitle(rawTitle: String): Future[Option[Post]] = {
-      val slugTitle = slugify(rawTitle)
-      couchBlog.postDesign.view("by_title", ViewQuery(key=Some(s""""$slugTitle""""))).map(response =>
+      val titleKey = Json.stringify(JsString(rawTitle))
+      val byTitleRequest = couchBlog.postDesign.view("by_title", ViewQuery(key=Some(titleKey)))
+      byTitleRequest.map(response =>
         response.json.as[View].rows.map(postRow => postRow.value.as[Post]).lift(0)
       )
     }

@@ -2,7 +2,6 @@ package db
 
 import play.api.libs.ws.{Response, WS}
 import scala.concurrent.Future
-import play.api.Logger
 
 
 trait WebService {
