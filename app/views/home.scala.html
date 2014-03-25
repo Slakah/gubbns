@@ -1,3 +1,6 @@
+@(posts: List[Post])
 @main("") {
-
+@posts.reverseMap { post =>
+@blog.blog_post(post)
+}
 }
