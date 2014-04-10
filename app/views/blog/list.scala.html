@@ -1,4 +1,4 @@
-@(posts: List[Post])
+@(posts: Seq[DisplayPost])
 @main("Blog") {
 @posts.reverseMap { post =>
 @blog_post(post)

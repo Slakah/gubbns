@@ -5,7 +5,7 @@ import scala.concurrent.duration._
 
 object Global extends GlobalSettings {
   override def onStart(app: Application) {
-    Await.result(BlogCouchSync(app), Duration("1 second"))
+    Await.result(BlogCouchSync(app), Duration("60 seconds"))
   }
 
   override def onStop(app: Application) {

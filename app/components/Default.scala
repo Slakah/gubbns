@@ -1,14 +1,18 @@
 package components
 
-import services.{CouchBlogServiceComponent, CouchServiceComponent, PostServiceComponent}
+import services._
 import repositories.PostRepositoryComponent
 
 
-trait Default extends PlayCouch with CouchBlogServiceComponent with Cache
-with PostServiceComponent with PostRepositoryComponent {
+trait Default extends PlayCouch with CouchBlogServiceComponent
+with PostServiceComponent with PostRepositoryComponent
+with MarkdownServiceComponent with PegdownServiceComponent
+with Cache{
   override val couchBlog = new CouchBlogService
   override val posts = new PostService
   override val postRepository = new CouchPosts
+  override implicit val markdown = PegdownService
+
 }
 
 

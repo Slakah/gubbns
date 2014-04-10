@@ -1,4 +1,4 @@
-@(post: Post)
+@(post: DisplayPost)
 <article>
     <header>
         <h2><a href="/blog/@slugify(post.title)">@post.title</a></h2>
@@ -7,6 +7,6 @@
             <time pubdate datetime="@post.published">@pretty_date(post.published)</time>
         </small>
     </header>
-    <div>@post.content</div>
+    <div>@post.markdownContent</div>
     <hr>
 </article>
