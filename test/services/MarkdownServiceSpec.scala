@@ -1,17 +1,13 @@
 package services
 
 import org.specs2.mutable.Specification
-import scala.concurrent.{Await, ExecutionContext}
-import scala.concurrent.duration.Duration
+import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
+import components.Pegdown
 
 
-class MarkdownServiceSpec extends Specification with MarkdownServiceComponent with PegdownServiceComponent {
+class MarkdownServiceSpec extends Specification with Pegdown {
   "MarkdownService" should {
-
-    def testMarkdown(input: String) = {
-      markdown(input).map(_.body)
-    }
 
     "transform # -> h1" in {
       markdown("#test header").map(_.body) must equalTo("<h1>test header</h1>").await

@@ -8,7 +8,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 trait MarkdownServiceComponent {
   this: MarkdownServiceComponent =>
 
-  implicit val markdown: MarkdownService
+  val markdown: MarkdownService
 
   class MarkdownServiceImpl extends MarkdownService {
     def apply(input: CharSequence): Future[Html] = markdown.apply(input)
@@ -22,7 +22,7 @@ trait MarkdownService {
 }
 
 trait PegdownServiceComponent extends MarkdownServiceComponent {
-  val markdown: MarkdownService = PegdownService
+  val markdown: MarkdownService
 
   object PegdownService extends MarkdownService {
     override def apply(input: CharSequence): Future[Html] = future {

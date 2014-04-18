@@ -2,7 +2,7 @@ package models
 
 import org.joda.time.DateTime
 import play.api.templates.Html
-import services.{MarkdownService, MarkdownServiceComponent}
+import services.MarkdownService
 import scala.concurrent._
 import play.api.libs.concurrent.Execution.Implicits._
 

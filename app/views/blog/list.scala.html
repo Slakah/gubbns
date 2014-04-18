@@ -1,6 +1,8 @@
 @(posts: Seq[DisplayPost])
 @main("Blog") {
+<div class="posts">
 @posts.reverseMap { post =>
-@blog_post(post)
+    @blog_post(post)
 }
+</div>
 }
