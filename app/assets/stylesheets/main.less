@@ -1,58 +1,27 @@
-@a-color: #F0FC00;
-@b-color: #EA0037;
-@c-color: #2419B2;
+@import "conf.less";
+@import "nav.less";
 
-@import url(http://fonts.googleapis.com/css?family=Exo:800);
-
-@media (min-width: 940px) {
+@media (min-width: 700px) {
     .container, .header {
-        margin: 0 auto;
-        width: 940px;
+        width: 700px;
     }
 }
 
-@media (max-width: 940px) {
+@media (max-width: 700px) {
     .container, .header {
-        margin: 0 auto;
         width: auto;
     }
 }
 
+html,body {
+    height:100%;
+}
 
+.container, .header {
+    margin: 0 auto;
+}
 
 a, a:visited, a:active {
-  color: inherit;
-  text-decoration: none;
-}
-
-.header {
-    color: @a-color;
-    background-color: @b-color;
-    border-right: solid 3px @c-color;
-    border-top: solid 3px @c-color;
-    font-family: 'Exo', 'sans-serif';
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-.brand-title {
-    margin: 0px;
-    font-weight: bold;
-    padding-bottom: 3px;
-    text-shadow: 3px 3px 1px @c-color;
-    display: inline-block;
-}
-
-.menu {
-    display: inline-block;
-    float: right;
-    margin: 0 auto;
-    margin-top: 10px;
-}
-
-.menu-item {
-    display: inline-block;
-    margin: 5px;
-    text-shadow: 2px 2px 1px @c-color;
-    font-size: 1.1em;
+    color: inherit;
+    text-decoration: none;
 }
