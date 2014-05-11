@@ -1,11 +1,11 @@
 @(post: DisplayPost)
 <article class="post">
     <header>
-        <h2><a href="/blog/@slugify(post.title)">@post.title</a></h2>
+        <h1><a href="/blog/@slugify(post.title)">@post.title</a></h1>
     </header>
 
     <div class="post-meta">
-        by <span class="post-author">@post.author</span>
+        By <span class="post-author">@post.author</span>
         <time class="post-date" datetime="@post.published">@pretty_date(post.published)</time>
     </div>
     <div class="post-content">@post.markdownContent</div>
