@@ -4,7 +4,7 @@ import org.joda.time._
 import org.joda.time.format.{DateTimeFormat, PeriodFormatterBuilder, PeriodFormatter}
 
 object PrettyDate {
-  private val dateFormat = DateTimeFormat.forPattern("dd-MM-yyyy")
+  private val dateFormat = DateTimeFormat.forPattern("MMMM d, yyyy")
   
   // The threshold where absolute dates will be used instead of a relative time
   val DateThreshold = Weeks.weeks(2)

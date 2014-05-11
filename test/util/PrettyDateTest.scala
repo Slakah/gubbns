@@ -110,7 +110,7 @@ class PrettyDateTest {
     val nowMinusThreshold = DateTime.parse("2010-08-01")
     val now = nowMinusThreshold.plus(PrettyDate.DateThreshold).plusMillis(1)
     DateTimeUtils.setCurrentMillisFixed(now.getMillis)
-    assertThat(PrettyDate.print(nowMinusThreshold), equalTo("on 01-08-2010"))
+    assertThat(PrettyDate.print(nowMinusThreshold), equalTo("on August 1, 2010"))
   }
 
   @Test
@@ -118,7 +118,7 @@ class PrettyDateTest {
     val nowPlusThreshold = DateTime.parse("2010-08-01")
     val now = nowPlusThreshold.minus(PrettyDate.DateThreshold)
     DateTimeUtils.setCurrentMillisFixed(now.getMillis)
-    assertThat(PrettyDate.print(nowPlusThreshold), equalTo("on 01-08-2010"))
+    assertThat(PrettyDate.print(nowPlusThreshold), equalTo("on August 1, 2010"))
   }
 
   @Test
