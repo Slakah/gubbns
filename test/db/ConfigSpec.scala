@@ -3,11 +3,16 @@ package db
 import org.specs2.mutable._
 import play.api.test._
 import play.api.test.Helpers._
+import play.api.Configuration
+
+class FakeApplicationWithEmptyConfig extends FakeApplication {
+  override def configuration: Configuration = Configuration.empty
+}
 
 class ConfigSpec extends Specification with PlayConfigService {
   "Config" should {
     "use default host 'localhost'" in {
-      running(FakeApplication()) {
+      running(new FakeApplicationWithEmptyConfig) {
         config().host must equalTo("localhost")
       }
     }
@@ -21,7 +26,7 @@ class ConfigSpec extends Specification with PlayConfigService {
     }
 
     "use default port 5984" in {
-      running(FakeApplication()) {
+      running(new FakeApplicationWithEmptyConfig){
         config().port must equalTo(5984)
       }
     }

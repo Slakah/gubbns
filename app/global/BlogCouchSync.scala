@@ -42,9 +42,6 @@ object BlogCouchSync {
   import play.api.Mode
 
   def apply(app: Application): Future[Unit] = {
-    app.mode match {
-      case Mode.Test => Promise[Unit]().future
-      case _ => new BlogCouchSync().sync()
-    }
+    new BlogCouchSync().sync()
   }
 }
