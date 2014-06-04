@@ -14,7 +14,16 @@ case class Post(
                  author: String
                  )
 
+object IsoDateTimeFormat extends DefaultFormat with DefaultReads with DefaultWrites {
+  val dateTimePattern = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+  val isoJodaDateTimeFormat = GenericFormat[DateTime](jodaDateReads(dateTimePattern),
+    jodaDateWrites(dateTimePattern))
+
+}
+
 object PostFormat {
+  implicit val isoJodaDateTimeFormat = IsoDateTimeFormat.isoJodaDateTimeFormat
+
   implicit val postFormats = (
     (__ \ "_id").format[String] and
       (__ \ "_rev").format[Option[String]] and

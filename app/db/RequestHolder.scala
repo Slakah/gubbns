@@ -1,7 +1,7 @@
 package db
 
 import scala.concurrent.Future
-import play.api.libs.ws.Response
+import play.api.libs.ws.WSResponse
 
 
 case class RequestHolder(webService: WebService, url: String) {
@@ -10,12 +10,12 @@ case class RequestHolder(webService: WebService, url: String) {
 
   def appendQuery(query: String) = RequestHolder(webService, s"$url?$query")
 
-  def put(body: String): Future[Response] = webService.put(url, body)
+  def put(body: String): Future[WSResponse] = webService.put(url, body)
 
-  def put(): Future[Response] = webService.put(url)
+  def put(): Future[WSResponse] = webService.put(url)
 
-  def get(): Future[Response] = webService.get(url)
+  def get(): Future[WSResponse] = webService.get(url)
 
-  def delete(): Future[Response] = webService.delete(url)
+  def delete(): Future[WSResponse] = webService.delete(url)
 
 }

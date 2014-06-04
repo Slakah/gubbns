@@ -2,12 +2,13 @@
 <article class="post">
     <header>
         <h1><a href="/blog/@slugify(post.title)">@post.title</a></h1>
+        <div class="post-meta">
+            By <span class="post-author">@post.author</span>
+            <time class="post-date" datetime="@post.published">@pretty_date(post.published)</time>
+        </div>
     </header>
 
-    <div class="post-meta">
-        By <span class="post-author">@post.author</span>
-        <time class="post-date" datetime="@post.published">@pretty_date(post.published)</time>
-    </div>
     <div class="post-content">@post.markdownContent</div>
-    <hr/>
 </article>
+<hr/>
+

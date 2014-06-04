@@ -1,6 +1,6 @@
 package services
 
-import play.api.templates.Html
+import play.twirl.api.Html
 import org.pegdown.PegDownProcessor
 import scala.concurrent._
 import play.api.libs.concurrent.Execution.Implicits._
@@ -25,7 +25,7 @@ trait PegdownServiceComponent extends MarkdownServiceComponent {
   val markdown: MarkdownService
 
   object PegdownService extends MarkdownService {
-    override def apply(input: CharSequence): Future[Html] = future {
+    override def apply(input: CharSequence): Future[Html] = Future {
       Html(new PegDownProcessor().markdownToHtml(input.toString))
     }
   }

@@ -5,8 +5,7 @@ import repositories.PostRepositoryComponent
 
 
 trait Default extends PlayCouch
-with Pegdown
-with Cache{
+with Pegdown {
 }
 
 
@@ -20,17 +19,4 @@ with PostServiceComponent with PostRepositoryComponent {
 
 trait Pegdown extends MarkdownServiceComponent with PegdownServiceComponent {
   override implicit val markdown = PegdownService
-}
-
-trait Cache {
-  import org.joda.time.Minutes
-  import play.api.mvc.EssentialAction
-  import play.api.cache.Cached
-  import play.api.Play.current
-
-  val longDuration = Minutes.minutes(10).toStandardSeconds.getSeconds
-
-  def longCache(key: String)(action: EssentialAction) = {
-    Cached(key, longDuration)(action)
-  }
 }

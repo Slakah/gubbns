@@ -2,7 +2,7 @@ package db
 
 import scala.concurrent.Future
 import db.ResponseHandler.FutureResponseWithValidate
-import play.api.libs.ws.Response
+import play.api.libs.ws.WSResponse
 
 class Couch extends ConfigService with WebService {
   val couchDbUrl = s"${config().protocol}://${config().host}:${config().port}"
@@ -13,12 +13,12 @@ class Couch extends ConfigService with WebService {
     new Database(dbRequestBase)
   }
 
-  def createDatabase(dbName: DatabaseName): Future[Response] = {
+  def createDatabase(dbName: DatabaseName): Future[WSResponse] = {
     val createDbRequest = databaseRequest(dbName).put()
     createDbRequest.validateWithError()
   }
 
-  def deleteDatabase(dbName: DatabaseName): Future[Response] = {
+  def deleteDatabase(dbName: DatabaseName): Future[WSResponse] = {
     val deleteDbRequest = databaseRequest(dbName).delete()
     deleteDbRequest.validateWithError()
   }

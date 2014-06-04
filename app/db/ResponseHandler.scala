@@ -1,18 +1,17 @@
 package db
 
-import play.api.libs.ws.Response
+import play.api.libs.ws.WSResponse
 import play.api.libs.json.JsValue
 import db.readers.{CouchError, CouchErrorRead}
 import CouchErrorRead._
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
-import play.Logger
 
 
 case class CouchDbRequestException(message: String) extends RuntimeException(message)
 
 object ResponseHandler {
-  def validate(response: Response): Either[String, Response] = {
+  def validate(response: WSResponse): Either[String, WSResponse] = {
     val status = response.status
     if (status < 400) {
       Right(response)
@@ -33,12 +32,12 @@ object ResponseHandler {
     })
   }
 
-  implicit class FutureResponseWithValidate(futureResponse: Future[Response]) {
+  implicit class FutureResponseWithValidate(futureResponse: Future[WSResponse]) {
     def validate() = futureResponse.map {
       ResponseHandler.validate
     }
 
-    def validateWithError(): Future[Response] = {
+    def validateWithError(): Future[WSResponse] = {
       futureResponse.map {
         response =>
           ResponseHandler.validate(response) match {

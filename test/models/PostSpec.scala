@@ -15,7 +15,7 @@ class PostSpec extends Specification {
                                      "_rev": "17-4f9603c31a1813280c46c7e124d62562",
                                      "title": "First",
                                      "author": "Slakah",
-                                     "published": "2014-02-12",
+                                     "published": "2014-02-12T00:00:00Z",
                                      "content": "Today was a wonderful day in milton keynes",
                                      "type": "post"
                                   }""")

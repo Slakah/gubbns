@@ -1,20 +1,19 @@
-import play.Project._
-
 name := """gubbns"""
 
 version := "1.0-SNAPSHOT"
 
-scalaVersion := "2.10.4"
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
+scalaVersion := "2.11.1"
 
 libraryDependencies ++= Seq(
   cache,
-  "org.mockito" % "mockito-all" % "1.9.0",
-  "org.webjars" %% "webjars-play" % "2.2.0",
-  "org.webjars" % "bootstrap" % "3.0.0",
+  ws,
+  "org.specs2" %% "specs2" % "2.3.12" % "test",
+  "org.mockito" % "mockito-core" % "1.9.5" % "test",
   "org.pegdown" % "pegdown" % "1.4.2"
 )
 
+scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-playScalaSettings
-
+LessKeys.compress in Assets := true

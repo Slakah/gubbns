@@ -1,7 +1,6 @@
 package services
 
 import db.{WSWebService, PlayConfigService, Couch}
-import db.DatabaseName.StringWithToDatabaseName
 
 trait CouchServiceComponent {
   val couchService: CouchService

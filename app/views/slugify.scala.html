@@ -1,4 +1,1 @@
-@(raw: String)
-@import util.Slugify
-@* Convert text to url freindly version http://en.wikipedia.org/wiki/Clean_URL *@
-@(Slugify.slugify(raw))
+@(raw: String)@(util.Slugify.slugify(raw))

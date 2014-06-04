@@ -28,7 +28,7 @@ object ViewFunctionFormat {
       def nameWithJsFunctions(viewFunc: ViewFunction) = {
         import Json.toJson
         def filterNoneViews(view: (String, Option[String])): Option[(String, JsValue)] = view match {
-          case (name, Some(viewFunc)) => Some(name, toJson(viewFunc))
+          case (name, Some(func)) => Some(name, toJson(func))
           case (name, None) => None
         }
 

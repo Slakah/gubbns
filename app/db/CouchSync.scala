@@ -4,7 +4,6 @@ import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.util.Success
 import services.CouchServiceComponent
-import play.Logger
 
 case class DesignStructure(name: String, json: String)
 
@@ -39,7 +38,8 @@ trait CouchSync extends CouchServiceComponent {
   }
 
   private def foldFutures(futures: TraversableOnce[Future[_]]): Future[Unit] = {
-    futures.foldLeft(Future[Unit]())({(f1, f2) => for {
+    val emptyFuture = Future{()}
+    futures.foldLeft(emptyFuture)({(f1, f2) => for {
         r1 <- f1
         r2 <- f2
       } yield ()

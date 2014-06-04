@@ -1,14 +1,14 @@
 package global
 
-import play.api.{Mode, Application, GlobalSettings}
+import play.api.Application
 import play.Logger
 import db.{DesignStructure, DatabaseStructure, CouchStructure, CouchSync}
-import components.{Default, PlayCouch}
+import components.PlayCouch
 import db.DatabaseName.StringWithToDatabaseName
 import db.readers.DesignFormat.designFormats
 import db.readers.{ViewFunction, Design}
 import play.api.libs.json.Json
-import scala.concurrent.{Promise, Future}
+import scala.concurrent.Future
 
 object BlogStructure {
 
@@ -39,8 +39,6 @@ class BlogCouchSync {
 }
 
 object BlogCouchSync {
-  import play.api.Mode
-
   def apply(app: Application): Future[Unit] = {
     new BlogCouchSync().sync()
   }
