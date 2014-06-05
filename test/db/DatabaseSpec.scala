@@ -29,7 +29,7 @@ class DatabaseSpec extends Specification with Mockito {
 
       mockRequestHolder.append(docId) returns mockRequestHolder
       val expectedResponse = Mocks.validResponse(docBody)
-      mockRequestHolder.get() returns future {
+      mockRequestHolder.get() returns Future {
         expectedResponse
       }
 
@@ -49,7 +49,7 @@ class DatabaseSpec extends Specification with Mockito {
       mockRequestHolder.append(designId) returns mockRequestHolder
 
       val expectedResponse = Mocks.validResponse(docBody)
-      mockRequestHolder.get() returns future {
+      mockRequestHolder.get() returns Future {
         expectedResponse
       }
 
