@@ -38,7 +38,7 @@
             content: "";
             position: absolute;
             margin-top: -0.1em;
-            margin-left: 0.2em;
+            margin-left: 0.195em;
             .tlTriangle();
             pointer-events: none;
         }
@@ -47,7 +47,9 @@
             -webkit-transform:  translate(4px, -4px);
             transform: translate(4px, -4px);
             transition: all 0.1s;
-
+        }
+        
+        &:hover {
             // Increase clickable area when moving
             &::before {
                 content: "";
