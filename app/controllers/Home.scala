@@ -11,7 +11,7 @@ object Home extends Application {
     posts.getAll.flatMap{allPosts =>
       Future.sequence(allPosts.map(DisplayPost.apply)).map {
         displayPosts =>
-          Ok(views.html.blog.list.render(displayPosts))
+          Ok(views.html.home.render(displayPosts))
       }
     }
   }
