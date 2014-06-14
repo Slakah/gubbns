@@ -19,7 +19,7 @@ trait CouchSync extends CouchServiceComponent {
 
   /**
    * Sync the proposed couch structure with the database
-   * @param structure
+   * @param structure the structure of the databases/designs for a couchdb
    * @return
    */
   def sync(structure: CouchStructure): Future[Unit] = {
