@@ -41,6 +41,6 @@ object BlogCouchSync {
 case class BlogCouchSyncPlugin(app: Application) extends Plugin {
   override def onStart() {
     Logger.info("Creating blog couchdb structure")
-    Await.ready(BlogCouchSync.sync(), 60 seconds)
+    Await.ready(BlogCouchSync.sync(), 60.seconds)
   }
 }

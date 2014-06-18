@@ -11,12 +11,11 @@ object PrettyDate {
 
   /**
    * When the difference between the supplied date and now is greater
-   * than [[util.PrettyDate.DateThreshold]] apply the date format
+   * than [[DateThreshold]] apply the date format
    * dd-MM-yyyy to the supplied date.
    *
-   * When less than the threshold round to the significant time field
-   * as per [[util.PrettyDate.printRelativeTime()]], unless less than
-   * one second where "recently" will be used
+   * When less than the threshold round to the significant time field, unless it's
+   * less than one second where "recently" will be used
    */
   def print(date: DateTime) = {
     val now = DateTime.now
