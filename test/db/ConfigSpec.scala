@@ -4,8 +4,9 @@ import org.specs2.mutable._
 import play.api.test._
 import play.api.test.Helpers._
 import play.api.Configuration
+import plugins.BlogCouchSyncPlugin
 
-class FakeApplicationWithEmptyConfig extends FakeApplication {
+class FakeApplicationWithEmptyConfig extends FakeApplication(withoutPlugins = Seq(classOf[BlogCouchSyncPlugin].getName)) {
   override def configuration: Configuration = Configuration.empty
 }
 
