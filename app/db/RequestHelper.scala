@@ -6,7 +6,7 @@ object RequestHelper {
   implicit class RequestHelper(request: RequestHolder) {
 
     def ifNotExist[A](f: () => Future[A]): Future[Unit] = {
-      doesExist.collect({
+      doesExist().collect({
           case false => f().map(_ => ())
           case true => ()
       })
@@ -14,15 +14,13 @@ object RequestHelper {
 
 
     def doesExist(): Future[Boolean] = {
-      request.get().map({
-        response =>
-          response.status match {
-            case 404 => false
-            case 200 => true
-            case _ =>
-              throw new IllegalStateException( s"""Expected status code OK (200) or Not Found (404), got "${response.status}" """)
-          }
-      })
+      request.get().map(_.status match {
+          case 404 => false
+          case 200 => true
+          case errorStatus =>
+            throw new IllegalStateException( s"""Expected status code OK (200) or Not Found (404), got "${errorStatus}" """)
+        }
+      )
     }
   }
 }

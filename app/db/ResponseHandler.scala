@@ -23,29 +23,23 @@ object ResponseHandler {
     }
   }
 
-  private def errorFromJson(errorJs: JsValue) = {
-    errorJs.asOpt[CouchError].map({
-      error =>
-        val errorType = error.error
-        val reason = error.reason
-        s"""CouchDB request failed with error "$errorType" and reason "$reason" """
-    })
+  private def errorFromJson(errorJs: JsValue) = errorJs.asOpt[CouchError].map {
+    error =>
+      val errorType = error.error
+      val reason = error.reason
+      s"""CouchDB request failed with error "$errorType" and reason "$reason" """
   }
 
   implicit class FutureResponseWithValidate(futureResponse: Future[WSResponse]) {
-    def validate() = futureResponse.map {
-      ResponseHandler.validate
-    }
+    def validate() = futureResponse.map(ResponseHandler.validate)
 
-    def validateWithError(): Future[WSResponse] = {
-      futureResponse.map {
-        response =>
-          ResponseHandler.validate(response) match {
-            case Right(validResponse) => validResponse
-            case Left(errorMsg) => throw new CouchDbRequestException(errorMsg)
-          }
+    def validateWithError(): Future[WSResponse] = futureResponse.map {
+      ResponseHandler.validate(_) match {
+        case Right(validResponse) => validResponse
+        case Left(errorMsg) => throw new CouchDbRequestException(errorMsg)
       }
     }
+
   }
 
 }

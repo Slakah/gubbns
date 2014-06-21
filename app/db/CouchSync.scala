@@ -25,15 +25,15 @@ trait CouchSync extends CouchServiceComponent {
   def sync(structure: CouchStructure): Future[Unit] = {
     val createStructures: Set[Future[Unit]] = structure.databases.map({dbStructure =>
       val database = couch.database(dbStructure.dbName)
-      database.createIfNoneExist.andThen({case Success(_) => createDesignsIfNoneExist(database, dbStructure.designs)})
+      database.createIfNoneExist().andThen({case Success(_) => createDesignsIfNoneExist(database, dbStructure.designs)})
     })
     foldFutures(createStructures)
   }
 
   private def createDesignsIfNoneExist(database: Database, designs: Set[DesignStructure]): Future[Unit] = {
-    val createDesigns: Set[Future[_]] = designs.map({(design: DesignStructure) =>
-      database.databaseDesign(design.name).createOrUpdate(design.json)
-    })
+    val createDesigns: Set[Future[_]] = designs.map {
+      design => database.databaseDesign(design.name).createOrUpdate(design.json)
+    }
     foldFutures(createDesigns)
   }
 
