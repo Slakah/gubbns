@@ -4,19 +4,19 @@ import services._
 import repositories.PostRepositoryComponent
 
 
-trait Default extends PlayCouch
-with Pegdown {
-}
+trait Default extends PlayCouch with Pegdown
 
-
-trait PlayCouch extends CouchServiceComponent with CouchBlogServiceComponent
-with PostServiceComponent with PostRepositoryComponent {
-  override val couchService = new PlayCouchService
-  override val couchBlog = new CouchBlogService
-  override val posts = new PostService
-  override val postRepository = new CouchPosts
+trait PlayCouch extends Pegdown with Repositories with PostServiceComponent {
+  override lazy val posts = new Posts with Repositories
 }
 
 trait Pegdown extends MarkdownServiceComponent with PegdownServiceComponent {
-  override implicit val markdown = PegdownService
+  override implicit lazy val markdown = PegdownService
+}
+
+trait Repositories extends CouchServiceComponent with CouchBlogServiceComponent with PostRepositoryComponent {
+  override lazy val couchService = new PlayCouchService
+  override lazy val couchBlog = new CouchBlogService
+  override lazy val postRepository = new CouchPosts
+
 }

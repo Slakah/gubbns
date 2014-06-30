@@ -24,6 +24,7 @@ trait PostRepositoryComponent {
 
 
   class CouchPosts extends PostRepository {
+
     import models.PostFormat.postFormats
 
     override def findByTitle(rawTitle: String): Future[Option[Post]] = {

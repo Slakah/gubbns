@@ -6,11 +6,17 @@ import scala.concurrent.Future
 
 
 trait PostServiceComponent {
-  this: PostRepositoryComponent =>
-
   val posts: PostService
 
-  class PostService {
+  trait PostService {
+    def findByTitle(name: String): Future[Option[Post]]
+
+    def getAll: Future[List[Post]]
+  }
+
+  class Posts extends PostService {
+    this: PostRepositoryComponent =>
+
     def findByTitle(name: String): Future[Option[Post]] = postRepository.findByTitle(name)
 
     def getAll: Future[List[Post]] = postRepository.getAll

@@ -13,8 +13,6 @@ trait MarkdownServiceComponent {
   class MarkdownServiceImpl extends MarkdownService {
     def apply(input: CharSequence): Future[Html] = markdown.apply(input)
   }
-
-
 }
 
 trait MarkdownService {
