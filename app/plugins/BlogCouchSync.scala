@@ -3,11 +3,11 @@ package plugins
 import play.api.{Application, Plugin}
 import play.Logger
 import db.{DesignStructure, DatabaseStructure, CouchStructure, CouchSync}
-import components.PlayCouch
 import db.DatabaseName.StringWithToDatabaseName
 import db.readers.DesignFormat.designFormats
 import db.readers.{ViewFunction, Design}
 import play.api.libs.json.Json
+import repositories.PlayCouchServiceComponent
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
@@ -31,7 +31,7 @@ object BlogStructure {
 }
 
 object BlogCouchSync {
-  val couchSync = new CouchSync with PlayCouch
+  val couchSync = new CouchSync with PlayCouchServiceComponent
 
   def sync(): Future[Unit] = {
     couchSync.sync(BlogStructure.blogStructure)

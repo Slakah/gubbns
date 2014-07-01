@@ -1,45 +1,47 @@
 package repositories
 
-import scala.concurrent.Future
-import services.CouchBlogServiceComponent
+import db.ViewQuery
+import db.readers.View
 import models.Post
 import play.api.libs.concurrent.Execution.Implicits._
-import db.readers.View
+import play.api.libs.json.{JsString, Json}
 
-import db.readers.ViewRead.viewReads
-import db.ViewQuery
-import play.api.libs.json.{Json, JsString}
+import scala.concurrent.Future
 
+trait PostRepository {
+  def findByTitle(name: String): Future[Option[Post]]
+
+  def getAll: Future[List[Post]]
+}
 
 trait PostRepositoryComponent {
-  this: CouchBlogServiceComponent =>
-
   val postRepository: PostRepository
+}
 
-  trait PostRepository {
-    def findByTitle(name: String): Future[Option[Post]]
+import db.DatabaseName._
+import models.PostFormat.postFormats
+import db.readers.ViewRead.viewReads
 
-    def getAll: Future[List[Post]]
-  }
+trait CouchPostRepositoryComponent extends PostRepositoryComponent {
+  this: CouchServiceComponent =>
 
+  val postRepository: PostRepository = CouchPosts
 
-  class CouchPosts extends PostRepository {
-
-    import models.PostFormat.postFormats
+  object CouchPosts extends PostRepository {
+    private val db = couchService.couch.database("blog".asDatabaseName)
+    private val postDesign = db.databaseDesign("post")
 
     override def findByTitle(rawTitle: String): Future[Option[Post]] = {
       val titleKey = Json.stringify(JsString(rawTitle))
-      val byTitleRequest = couchBlog.postDesign.view("by_title", ViewQuery(key=Some(titleKey)))
+      val byTitleRequest = postDesign.view("by_title", ViewQuery(key=Some(titleKey)))
       byTitleRequest.map(response =>
         response.json.as[View].rows.map(postRow => postRow.value.as[Post]).lift(0)
       )
     }
 
-
     override def getAll: Future[List[Post]] =
-      couchBlog.postDesign.view("all").map(response =>
+      postDesign.view("all").map(response =>
         response.json.as[View].rows.map(postRow => postRow.value.as[Post])
       )
   }
-
 }

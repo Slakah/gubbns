@@ -1,12 +1,8 @@
 package services
 
 import org.specs2.mutable.Specification
-import scala.concurrent.ExecutionContext
-import ExecutionContext.Implicits.global
-import components.Pegdown
-import concurrent.duration._
 
-class MarkdownServiceSpec extends Specification with Pegdown {
+class MarkdownServiceSpec extends Specification with PegdownServiceComponent {
   "MarkdownService" should {
 
     "transform # -> h1" in {

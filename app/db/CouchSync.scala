@@ -1,9 +1,10 @@
 package db
 
+import repositories.CouchServiceComponent
+
 import scala.concurrent.Future
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.util.Success
-import services.CouchServiceComponent
 
 case class DesignStructure(name: String, json: String)
 

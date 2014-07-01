@@ -5,22 +5,16 @@ import org.pegdown.PegDownProcessor
 import scala.concurrent._
 import play.api.libs.concurrent.Execution.Implicits._
 
-trait MarkdownServiceComponent {
-  this: MarkdownServiceComponent =>
-
-  val markdown: MarkdownService
-
-  class MarkdownServiceImpl extends MarkdownService {
-    def apply(input: CharSequence): Future[Html] = markdown.apply(input)
-  }
-}
-
 trait MarkdownService {
   def apply(input: CharSequence): Future[Html]
 }
 
+trait MarkdownServiceComponent {
+  def markdown: MarkdownService
+}
+
 trait PegdownServiceComponent extends MarkdownServiceComponent {
-  val markdown: MarkdownService
+  override implicit val markdown: MarkdownService = PegdownService
 
   object PegdownService extends MarkdownService {
     override def apply(input: CharSequence): Future[Html] = Future {

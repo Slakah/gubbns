@@ -1,25 +1,29 @@
 package services
 
-import repositories.PostRepositoryComponent
 import models.Post
+import repositories.PostRepositoryComponent
+
 import scala.concurrent.Future
 
+trait PostService {
+  def findByTitle(name: String): Future[Option[Post]]
+
+  def getAll: Future[List[Post]]
+}
 
 trait PostServiceComponent {
-  val posts: PostService
+  def posts: PostService
+}
 
-  trait PostService {
-    def findByTitle(name: String): Future[Option[Post]]
+trait PostsComponent extends PostServiceComponent {
+  this: PostRepositoryComponent =>
 
-    def getAll: Future[List[Post]]
-  }
+  override val posts = Posts
 
-  class Posts extends PostService {
-    this: PostRepositoryComponent =>
-
+  object Posts extends PostService {
     def findByTitle(name: String): Future[Option[Post]] = postRepository.findByTitle(name)
 
     def getAll: Future[List[Post]] = postRepository.getAll
   }
-
 }
+
