@@ -19,7 +19,7 @@ trait CouchSync {
   this: CouchServiceComponent =>
 
   private val couch = couchService.couch
-  
+
   /**
    * Sync the proposed couch structure with the database
    * @param structure the structure of the databases/designs for a couchdb
