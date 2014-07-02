@@ -4,7 +4,7 @@ import play.utils.UriEncoding
 
 object Slugify {
   /**
-   * Convert text to url freindly version http://en.wikipedia.org/wiki/Clean_URL
+   * Convert text to url friendly version http://en.wikipedia.org/wiki/Clean_URL
    * @param raw
    * @return
    */
