@@ -2,7 +2,7 @@ package services
 
 import org.specs2.mutable.Specification
 
-class MarkdownServiceSpec extends Specification with PegdownServiceComponent {
+class PegdownServiceSpec extends Specification with PegdownServiceComponent {
   "MarkdownService" should {
 
     "transform # -> h1" in {
