@@ -15,9 +15,11 @@ case class CouchStructure(databases: Set[DatabaseStructure])
 /**
  * Used to sync a proposed couch structure with the couchdb instance
  */
-trait CouchSync extends CouchServiceComponent {
-  val couch = new Couch() with PlayConfigService with WSWebService
+trait CouchSync {
+  this: CouchServiceComponent =>
 
+  private val couch = couchService.couch
+  
   /**
    * Sync the proposed couch structure with the database
    * @param structure the structure of the databases/designs for a couchdb
