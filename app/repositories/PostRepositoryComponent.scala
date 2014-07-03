@@ -25,9 +25,9 @@ import db.readers.ViewRead.viewReads
 trait CouchPostRepositoryComponent extends PostRepositoryComponent {
   this: CouchServiceComponent =>
 
-  val postRepository: PostRepository = CouchPosts
+  val postRepository: PostRepository = CouchPostRepository
 
-  object CouchPosts extends PostRepository {
+  object CouchPostRepository extends PostRepository {
     private val db = couchService.couch.database("blog".asDatabaseName)
     private val postDesign = db.databaseDesign("post")
 
