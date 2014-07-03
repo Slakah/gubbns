@@ -17,7 +17,7 @@ class PostSpec extends Specification {
                                      "author": "Slakah",
                                      "published": "2014-02-12T00:00:00Z",
                                      "content": "Today was a wonderful day in milton keynes",
-                                     "type": "post"
+                                     "typeId": "post"
                                   }""")
       val post = postJson.as[Post]
       post._id must equalTo("d8dd32adaac7e6e476dc658458001422")

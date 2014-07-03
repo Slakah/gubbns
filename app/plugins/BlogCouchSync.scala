@@ -14,8 +14,8 @@ import scala.concurrent.{Await, Future}
 object BlogStructure {
 
   val postDesign = Design(id = "post", views = Set(
-    ViewFunction(name = "all", map = Some("function(doc) {if (doc.type===\"post\") {emit(doc.published, doc);}}")),
-    ViewFunction(name = "by_title", map = Some("function(doc) {if (doc.type===\"post\") {emit(decodeURIComponent(doc.title.toLowerCase().replace(/\\s+/g, \"-\")), doc);}}"))
+    ViewFunction(name = "all", map = Some("function(doc) {if (doc.typeId===\"post\") {emit(doc.published, doc);}}")),
+    ViewFunction(name = "by_title", map = Some("function(doc) {if (doc.typeId===\"post\") {emit(decodeURIComponent(doc.title.toLowerCase().replace(/\\s+/g, \"-\")), doc);}}"))
   ))
 
   val blogStructure = CouchStructure(
