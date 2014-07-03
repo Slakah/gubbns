@@ -18,7 +18,6 @@ case class CouchStructure(databases: Set[DatabaseStructure])
 trait CouchSync {
   this: CouchServiceComponent =>
 
-  private val couch = couchService.couch
 
   /**
    * Sync the proposed couch structure with the database
@@ -27,7 +26,7 @@ trait CouchSync {
    */
   def sync(structure: CouchStructure): Future[Unit] = {
     val createStructures: Set[Future[Unit]] = structure.databases.map({dbStructure =>
-      val database = couch.database(dbStructure.dbName)
+      val database = couchService.couch.database(dbStructure.dbName)
       database.createIfNoneExist().andThen({case Success(_) => createDesignsIfNoneExist(database, dbStructure.designs)})
     })
     foldFutures(createStructures)

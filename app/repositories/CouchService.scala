@@ -7,7 +7,7 @@ trait CouchService {
 }
 
 trait CouchServiceComponent {
-  val couchService: CouchService
+  def couchService: CouchService
 }
 
 trait PlayCouchServiceComponent extends CouchServiceComponent {
