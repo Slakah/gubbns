@@ -1,5 +1,7 @@
 package db
 
+import db.readers.CouchError
+
 import scala.concurrent.Future
 import db.ResponseHandler.FutureResponseWithValidate
 import java.net.URLEncoder
@@ -40,13 +42,14 @@ case class ViewQuery(key: Option[String] = None) {
 case class DesignDocument(designRequest: RequestHolder) {
   import db.RequestHelper.RequestHelper
 
+  def view(view: String, viewQuery: ViewQuery = ViewQuery()): Future[Either[CouchError, WSResponse]] =
+    designRequest.append("_view").append(view).appendQuery(viewQuery.toQueryString).get().responseWithValidate
 
-  def createOrUpdate(json: String) = designRequest.put(json).validateWithError()
+  def createIfNoneExist(json: String): Future[Option[CouchError]] = designRequest.ifNotExist {()=>requestCreate(json)}
 
-  def view(view: String, viewQuery: ViewQuery = ViewQuery()): Future[WSResponse] =
-    designRequest.append("_view").append(view).appendQuery(viewQuery.toQueryString).get().validateWithError()
+  def doesExist: Future[Either[CouchError, Boolean]] = designRequest.doesExist()
 
-  def doesExist(): Future[Boolean] = designRequest.doesExist()
+  def create(json: String): Future[Either[CouchError, WSResponse]] = requestCreate(json).responseWithValidate
 
-  def createIfNoneExist(json: String): Future[Unit] = designRequest.ifNotExist(() => createOrUpdate(json))
+  private val requestCreate = designRequest.put(_)
 }

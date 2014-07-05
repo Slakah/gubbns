@@ -1,15 +1,17 @@
 package plugins
 
-import play.api.{Application, Plugin}
-import play.Logger
-import db.{DesignStructure, DatabaseStructure, CouchStructure, CouchSync}
 import db.DatabaseName.StringWithToDatabaseName
 import db.readers.DesignFormat.designFormats
-import db.readers.{ViewFunction, Design}
+import db.readers.{CouchError, Design, ViewFunction}
+import db.{CouchStructure, CouchSync, DatabaseStructure, DesignStructure}
+import play.Logger
 import play.api.libs.json.Json
+import play.api.{Application, Plugin}
 import repositories.PlayCouchServiceComponent
+
+import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
+import scala.util.Success
 
 object BlogStructure {
 
@@ -33,8 +35,18 @@ object BlogStructure {
 object BlogCouchSync {
   val couchSync = new CouchSync with PlayCouchServiceComponent
 
-  def sync(): Future[Unit] = {
-    couchSync.sync(BlogStructure.blogStructure)
+  def sync() = {
+    val sync = couchSync.sync(BlogStructure.blogStructure)
+    sync.andThen {
+      case Success(possibleErrors) =>
+        val errors = possibleErrors.flatten
+        if (errors.nonEmpty) logErrors(errors)
+    }
+  }
+
+  private def logErrors(errors: Set[CouchError]) = {
+    Logger.error("An error occurred while syncing design documents: ")
+    errors.foreach(error => Logger.error(f" type: ${error.error}, reason: ${error.reason}"))
   }
 }
 

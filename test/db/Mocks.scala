@@ -1,31 +1,21 @@
 package db
 
-import org.specs2.mock.Mockito
+import akka.dispatch.Futures
 import com.ning.http.client.{Response => AHCResponse}
-import scala.concurrent._
-import ExecutionContext.Implicits.global
+import org.specs2.mock.Mockito
 import play.api.libs.ws.WSResponse
-import play.api.libs.ws.ning.NingWSResponse
+
+import scala.concurrent._
 
 object Mocks extends Mockito {
-  def validResponse(body: String): WSResponse = {
-    val mockValidResponse = mock[AHCResponse]
-    mockValidResponse.getStatusCode returns 200
-    mockValidResponse.getResponseBody returns body
-    NingWSResponse(mockValidResponse)
+  val validResponse = validResponse("test_body")
+
+  private def validResponse(body: String): WSResponse = {
+    val mockValidResponse = mock[WSResponse]
+    mockValidResponse.status returns 200
+    mockValidResponse.body returns body
+    mockValidResponse
   }
 
-  def validFutureResponse: Future[WSResponse] = {
-    Future {
-      val mockValidResponse = mock[AHCResponse]
-      mockValidResponse.getStatusCode returns 200
-      NingWSResponse(mockValidResponse)
-    }
-  }
-
-  def validFutureResponse(body: String): Future[WSResponse] = {
-    Future {
-      validResponse(body)
-    }
-  }
+  val validFutureResponse: Future[WSResponse] = Futures.successful(validResponse)
 }

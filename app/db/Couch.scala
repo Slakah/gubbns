@@ -1,30 +1,18 @@
 package db
 
-import scala.concurrent.Future
 import db.ResponseHandler.FutureResponseWithValidate
-import play.api.libs.ws.WSResponse
+import db.readers.CouchError
+
+import scala.concurrent.Future
 
 class Couch extends ConfigService with WebService {
   val couchDbUrl = s"${config().protocol}://${config().host}:${config().port}"
   val couchBaseRequest = RequestHolder(this, couchDbUrl)
 
-  def database(dbName: DatabaseName): Database = {
-    val dbRequestBase = couchBaseRequest.append(dbName.toString)
-    new Database(dbRequestBase)
-  }
+  def database(dbName: DatabaseName): Database = new Database(couchBaseRequest.append(dbName.toString))
 
-  def createDatabase(dbName: DatabaseName): Future[WSResponse] = {
-    val createDbRequest = databaseRequest(dbName).put()
-    createDbRequest.validateWithError()
-  }
+  def createDatabase(dbName: DatabaseName): Future[Option[CouchError]] = databaseRequest(dbName).put().validate
 
-  def deleteDatabase(dbName: DatabaseName): Future[WSResponse] = {
-    val deleteDbRequest = databaseRequest(dbName).delete()
-    deleteDbRequest.validateWithError()
-  }
-
-  private def databaseRequest(dbName: DatabaseName): RequestHolder = {
-    couchBaseRequest.append(dbName.toString)
-  }
+  private def databaseRequest(dbName: DatabaseName): RequestHolder = couchBaseRequest.append(dbName.toString)
 }
 

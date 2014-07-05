@@ -3,9 +3,14 @@ package db.readers
 import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
-
+import play.api.libs.ws.WSResponse
 
 case class CouchError(error: String, reason: String)
+
+
+object CouchError {
+  def apply(response: WSResponse) =
+}
 
 object CouchErrorRead {
   implicit val couchReads = (

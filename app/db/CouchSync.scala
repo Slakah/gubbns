@@ -1,10 +1,11 @@
 package db
 
+import akka.dispatch.Futures
+import db.readers.CouchError
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import repositories.CouchServiceComponent
 
 import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits._
-import scala.util.Success
 
 case class DesignStructure(name: String, json: String)
 
@@ -18,33 +19,24 @@ case class CouchStructure(databases: Set[DatabaseStructure])
 trait CouchSync {
   this: CouchServiceComponent =>
 
-
   /**
    * Sync the proposed couch structure with the database
    * @param structure the structure of the databases/designs for a couchdb
    * @return
    */
-  def sync(structure: CouchStructure): Future[Unit] = {
-    val createStructures: Set[Future[Unit]] = structure.databases.map({dbStructure =>
-      val database = couchService.couch.database(dbStructure.dbName)
-      database.createIfNoneExist().andThen({case Success(_) => createDesignsIfNoneExist(database, dbStructure.designs)})
-    })
-    foldFutures(createStructures)
+  def sync(structure: CouchStructure): Future[Set[Option[CouchError]]] = {
+    Future.traverse(structure.databases)(createDatabasesAndDesigns).map(_.flatten)
   }
 
-  private def createDesignsIfNoneExist(database: Database, designs: Set[DesignStructure]): Future[Unit] = {
-    val createDesigns: Set[Future[_]] = designs.map {
-      design => database.databaseDesign(design.name).createOrUpdate(design.json)
+  private def createDatabasesAndDesigns(dbStructure: DatabaseStructure): Future[Set[Option[CouchError]]] = {
+    val database = couchService.couch.database(dbStructure.dbName)
+    database.createIfNoneExist().flatMap {
+      case error: Some => Futures.successful(Set(error))
+      case _ => createDesigns(database, dbStructure.designs)
     }
-    foldFutures(createDesigns)
   }
 
-  private def foldFutures(futures: TraversableOnce[Future[_]]): Future[Unit] = {
-    val emptyFuture = Future{()}
-    futures.foldLeft(emptyFuture)({(f1, f2) => for {
-        r1 <- f1
-        r2 <- f2
-      } yield ()
-    })
+  private def createDesigns(database: Database, designs: Set[DesignStructure]): Future[Set[Option[CouchError]]] = {
+    Future.traverse(designs){design => database.databaseDesign(design.name).createIfNoneExist(design.json)}
   }
 }

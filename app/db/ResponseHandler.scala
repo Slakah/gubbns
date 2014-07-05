@@ -1,45 +1,30 @@
 package db
 
+import db.readers.CouchError
+import db.readers.CouchErrorRead._
 import play.api.libs.ws.WSResponse
-import play.api.libs.json.JsValue
-import db.readers.{CouchError, CouchErrorRead}
-import CouchErrorRead._
+
 import scala.concurrent.Future
-import play.api.libs.concurrent.Execution.Implicits._
-
-
-case class CouchDbRequestException(message: String) extends RuntimeException(message)
 
 object ResponseHandler {
-  def validate(response: WSResponse): Either[String, WSResponse] = {
-    val status = response.status
-    if (status < 400) {
-      Right(response)
-    } else {
-      val errorMessage = errorFromJson(response.json)
-        .getOrElse( """CouchDB request failed with status "$response.statusText" code $response.status """)
 
-      Left(errorMessage)
+  def validate(response: WSResponse): Option[CouchError] = {
+    if (response.status < 400) {
+      None
+    } else {
+      Some(determineError(response))
     }
   }
 
-  private def errorFromJson(errorJs: JsValue) = errorJs.asOpt[CouchError].map {
-    error =>
-      val errorType = error.error
-      val reason = error.reason
-      s"""CouchDB request failed with error "$errorType" and reason "$reason" """
-  }
+  def determineError(response: WSResponse) = response.json.asOpt[CouchError].getOrElse(fallbackError(response))
+
+  private def fallbackError(response: WSResponse) = CouchError(response.status.toString, response.statusText)
 
   implicit class FutureResponseWithValidate(futureResponse: Future[WSResponse]) {
-    def validate() = futureResponse.map(ResponseHandler.validate)
+    def validate: Future[Option[CouchError]] = futureResponse.map(ResponseHandler.validate)
 
-    def validateWithError(): Future[WSResponse] = futureResponse.map {
-      ResponseHandler.validate(_) match {
-        case Right(validResponse) => validResponse
-        case Left(errorMsg) => throw new CouchDbRequestException(errorMsg)
-      }
-    }
-
+    def responseWithValidate: Future[Either[CouchError, WSResponse]] =
+      futureResponse.map(response => ResponseHandler.validate(response).toLeft(response))
   }
 
 }

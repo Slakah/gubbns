@@ -1,26 +1,31 @@
 package db
-import scala.concurrent.Future
+
+import akka.dispatch.Futures
+import db.readers.CouchError
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.ws.WSResponse
+import db.ResponseHandler.FutureResponseWithValidate
+import scala.concurrent.Future
 
 object RequestHelper {
   implicit class RequestHelper(request: RequestHolder) {
 
-    def ifNotExist[A](f: () => Future[A]): Future[Unit] = {
-      doesExist().collect({
-          case false => f().map(_ => ())
-          case true => ()
-      })
+    def ifNotExist(f: () => Future[WSResponse]): Future[Option[CouchError]] = {
+      doesExist().flatMap {
+        case Right(false) => f().validate
+        case Right(true) => Futures.successful(None)
+        case Left(error) => Futures.successful(Some(error))
+      }
     }
 
-
-    def doesExist(): Future[Boolean] = {
-      request.get().map(_.status match {
-          case 404 => false
-          case 200 => true
-          case errorStatus =>
-            throw new IllegalStateException( s"""Expected status code OK (200) or Not Found (404), got "${errorStatus}" """)
+    def doesExist(): Future[Either[CouchError, Boolean]] = {
+      request.get().map { response =>
+        response.status match {
+          case 404 => Right(false)
+          case 200 => Right(true)
+          case errorStatus => Left(ResponseHandler.determineError(response))
         }
-      )
+      }
     }
   }
 }

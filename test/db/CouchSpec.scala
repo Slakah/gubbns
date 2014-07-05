@@ -26,18 +26,9 @@ class CouchSpec extends Specification with Mockito {
     "create a database" in {
       mockWebService.put(s"http://localhost:5984/$databaseName") returns Mocks.validFutureResponse
 
-      couch.createDatabase(databaseName.asDatabaseName)
+      couch.createDatabase(databaseName.asDatabaseName) should beNone.await
 
       there was one(mockWebService).put(s"http://localhost:5984/$databaseName")
-    }
-
-
-    "delete a database" in {
-      mockWebService.delete(s"http://localhost:5984/$databaseName") returns Mocks.validFutureResponse
-
-      couch.deleteDatabase(databaseName.asDatabaseName)
-
-      there was one(mockWebService).delete(s"http://localhost:5984/$databaseName")
     }
   }
 }

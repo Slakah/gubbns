@@ -1,5 +1,7 @@
 package db
 
+import db.readers.CouchError
+
 import scala.concurrent.Future
 import play.api.libs.ws.WSResponse
 import db.ResponseHandler.FutureResponseWithValidate
@@ -7,26 +9,15 @@ import db.ResponseHandler.FutureResponseWithValidate
 case class Database(dbRequest: RequestHolder) {
   import db.RequestHelper.RequestHelper
 
+  def createIfNoneExist(): Future[Option[CouchError]] = dbRequest.ifNotExist(requestCreate)
 
-  def createIfNoneExist(): Future[Unit] = dbRequest.ifNotExist(create)
+  def doesExist: Future[Either[CouchError, Boolean]] = dbRequest.doesExist()
 
-  def doesExist: Future[Boolean] = dbRequest.doesExist()
+  def create(): Future[Either[CouchError, WSResponse]] = requestCreate().responseWithValidate
 
-  def create(): Future[WSResponse] = {
-    val createRequest = dbRequest.put()
-    createRequest.validateWithError()
-  }
+  private def requestCreate() = dbRequest.put()
 
-  def createOrUpdateDoc(doc: DocumentBase): Future[WSResponse] = {
-    val id = doc.id
-    dbRequest.append(id).put(doc.json).validateWithError()
-  }
+  def getDoc(id: String): Future[Either[CouchError, WSResponse]] = dbRequest.append(id).get().responseWithValidate
 
-  def getDoc(id: String): Future[WSResponse] = {
-    dbRequest.append(id).get().validateWithError()
-  }
-
-  def databaseDesign(designId: String) = {
-    DesignDocument(dbRequest.append("_design").append(designId))
-  }
+  def databaseDesign(designId: String) = DesignDocument(dbRequest.append("_design").append(designId))
 }
