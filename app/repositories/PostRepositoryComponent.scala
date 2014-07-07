@@ -33,15 +33,15 @@ trait CouchPostRepositoryComponent extends PostRepositoryComponent {
 
     override def findByTitle(rawTitle: String): Future[Option[Post]] = {
       val titleKey = Json.stringify(JsString(rawTitle))
-      val byTitleRequest = postDesign.view("by_title", ViewQuery(key=Some(titleKey)))
-      byTitleRequest.map(response =>
-        response.json.as[View].rows.map(postRow => postRow.value.as[Post]).lift(0)
-      )
+      val byTitleRequest = postDesign.view("by_title", ViewQuery(key = Some(titleKey)))
+      byTitleRequest.map {
+        case Right(response) => response.json.as[View].rows.map(postRow => postRow.value.as[Post]).lift(0)
+      }
     }
 
     override def getAll: Future[List[Post]] =
-      postDesign.view("all").map(response =>
-        response.json.as[View].rows.map(postRow => postRow.value.as[Post])
-      )
+      postDesign.view("all").map {
+        case Right(response) => response.json.as[View].rows.map(postRow => postRow.value.as[Post])
+      }
   }
 }

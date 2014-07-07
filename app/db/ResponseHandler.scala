@@ -6,6 +6,8 @@ import play.api.libs.ws.WSResponse
 
 import scala.concurrent.Future
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 object ResponseHandler {
 
   def validate(response: WSResponse): Option[CouchError] = {

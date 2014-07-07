@@ -31,7 +31,7 @@ trait CouchSync {
   private def createDatabasesAndDesigns(dbStructure: DatabaseStructure): Future[Set[Option[CouchError]]] = {
     val database = couchService.couch.database(dbStructure.dbName)
     database.createIfNoneExist().flatMap {
-      case error: Some => Futures.successful(Set(error))
+      case Some(error) => Futures.successful(Set(Some(error)))
       case _ => createDesigns(database, dbStructure.designs)
     }
   }

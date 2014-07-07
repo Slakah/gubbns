@@ -13,6 +13,8 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.Success
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 object BlogStructure {
 
   val postDesign = Design(id = "post", views = Set(

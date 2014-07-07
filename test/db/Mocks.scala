@@ -8,7 +8,7 @@ import play.api.libs.ws.WSResponse
 import scala.concurrent._
 
 object Mocks extends Mockito {
-  val validResponse = validResponse("test_body")
+  val validResponse: WSResponse = validResponse("test_body")
 
   private def validResponse(body: String): WSResponse = {
     val mockValidResponse = mock[WSResponse]

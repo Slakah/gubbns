@@ -51,5 +51,5 @@ case class DesignDocument(designRequest: RequestHolder) {
 
   def create(json: String): Future[Either[CouchError, WSResponse]] = requestCreate(json).responseWithValidate
 
-  private val requestCreate = designRequest.put(_)
+  private val requestCreate: String => Future[WSResponse]  = designRequest.put
 }

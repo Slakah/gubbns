@@ -1,9 +1,8 @@
 package db.readers
 
-import play.api.libs.json._
-import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
-import play.api.libs.ws.WSResponse
+import play.api.libs.json.Reads._
+import play.api.libs.json._
 
 case class CouchError(error: String, reason: String)
 
