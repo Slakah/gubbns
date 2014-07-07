@@ -7,11 +7,6 @@ import play.api.libs.ws.WSResponse
 
 case class CouchError(error: String, reason: String)
 
-
-object CouchError {
-  def apply(response: WSResponse) =
-}
-
 object CouchErrorRead {
   implicit val couchReads = (
     (__ \ "error").read[String] and
