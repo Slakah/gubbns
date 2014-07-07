@@ -1,7 +1,6 @@
 package db
 
 import akka.dispatch.Futures
-import com.ning.http.client.{Response => AHCResponse}
 import org.specs2.mock.Mockito
 import play.api.libs.ws.WSResponse
 
