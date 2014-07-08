@@ -29,12 +29,12 @@ class DesignDocumentSpec extends Specification with Mockito {
 
       mockRequestHolder.get() returns Mocks.validFutureResponse
 
+      DesignDocument(mockRequestHolder).view(viewId) must beRight(Mocks.validResponse).await
+
       there was one(mockRequestHolder).append("_view")
       there was one(mockRequestHolder).append(viewId)
       there was one(mockRequestHolder).appendQuery("")
       there was one(mockRequestHolder).get()
-
-      DesignDocument(mockRequestHolder).view(viewId) must beRight(Mocks.validResponse).await
     }
   }
 }
