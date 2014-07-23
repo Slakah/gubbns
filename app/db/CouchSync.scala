@@ -1,7 +1,5 @@
 package db
 
-import akka.dispatch.Futures
-import db.readers.CouchError
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import repositories.CouchServiceComponent
 
@@ -24,19 +22,18 @@ trait CouchSync {
    * @param structure the structure of the databases/designs for a couchdb
    * @return
    */
-  def sync(structure: CouchStructure): Future[Set[Option[CouchError]]] = {
+  def sync(structure: CouchStructure): Future[Set[Unit]] = {
     Future.traverse(structure.databases)(createDatabasesAndDesigns).map(_.flatten)
   }
 
-  private def createDatabasesAndDesigns(dbStructure: DatabaseStructure): Future[Set[Option[CouchError]]] = {
+  private def createDatabasesAndDesigns(dbStructure: DatabaseStructure): Future[Set[Unit]] = {
     val database = couchService.couch.database(dbStructure.dbName)
-    database.createIfNoneExist().flatMap {
-      case Some(error) => Futures.successful(Set(Some(error)))
-      case _ => createDesigns(database, dbStructure.designs)
+    database.createIfNoneExist().flatMap { _ =>
+      createDesigns(database, dbStructure.designs)
     }
   }
 
-  private def createDesigns(database: Database, designs: Set[DesignStructure]): Future[Set[Option[CouchError]]] = {
+  private def createDesigns(database: Database, designs: Set[DesignStructure]): Future[Set[Unit]] = {
     Future.traverse(designs){design => database.databaseDesign(design.name).createIfNoneExist(design.json)}
   }
 }

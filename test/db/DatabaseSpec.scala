@@ -19,7 +19,7 @@ class DatabaseSpec extends Specification with Mockito {
 
       there was one(mockRequestHolder).append(docId)
       there was one(mockRequestHolder).get()
-      testResponse must beRight(Mocks.validResponse).await
+      testResponse must be(Mocks.validResponse).await
     }
 
     "create design document accessor" in {

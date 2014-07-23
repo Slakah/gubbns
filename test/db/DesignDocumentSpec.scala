@@ -15,7 +15,7 @@ class DesignDocumentSpec extends Specification with Mockito {
 
       there was one(mockRequestHolder).put(designJson)
 
-      designResponse must beRight(Mocks.validResponse).await
+      designResponse must be(Mocks.validResponse).await
     }
 
     "execute a view" in {
@@ -29,7 +29,7 @@ class DesignDocumentSpec extends Specification with Mockito {
 
       mockRequestHolder.get() returns Mocks.validFutureResponse
 
-      DesignDocument(mockRequestHolder).view(viewId) must beRight(Mocks.validResponse).await
+      DesignDocument(mockRequestHolder).view(viewId) must be(Mocks.validResponse).await
 
       there was one(mockRequestHolder).append("_view")
       there was one(mockRequestHolder).append(viewId)

@@ -9,15 +9,15 @@ import db.ResponseHandler.FutureResponseWithValidate
 case class Database(dbRequest: RequestHolder) {
   import db.RequestHelper.RequestHelper
 
-  def createIfNoneExist(): Future[Option[CouchError]] = dbRequest.ifNotExist(requestCreate)
+  def createIfNoneExist(): Future[Unit] = dbRequest.ifNotExist(requestCreate)
 
-  def doesExist: Future[Either[CouchError, Boolean]] = dbRequest.doesExist()
+  def doesExist: Future[Boolean] = dbRequest.doesExist()
 
-  def create(): Future[Either[CouchError, WSResponse]] = requestCreate().responseWithValidate
+  def create(): Future[WSResponse] = requestCreate().validate
 
   private def requestCreate() = dbRequest.put()
 
-  def getDoc(id: String): Future[Either[CouchError, WSResponse]] = dbRequest.append(id).get().responseWithValidate
+  def getDoc(id: String): Future[WSResponse] = dbRequest.append(id).get().validate
 
   def databaseDesign(designId: String) = DesignDocument(dbRequest.append("_design").append(designId))
 }

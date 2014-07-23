@@ -2,6 +2,7 @@ package repositories
 
 import db.ViewQuery
 import db.readers.View
+import db.readers.ViewRead.viewReads
 import models.Post
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsString, Json}
@@ -20,7 +21,6 @@ trait PostRepositoryComponent {
 
 import db.DatabaseName._
 import models.PostFormat.postFormats
-import db.readers.ViewRead.viewReads
 
 trait CouchPostRepositoryComponent extends PostRepositoryComponent {
   this: CouchServiceComponent =>
@@ -35,13 +35,14 @@ trait CouchPostRepositoryComponent extends PostRepositoryComponent {
       val titleKey = Json.stringify(JsString(rawTitle))
       val byTitleRequest = postDesign.view("by_title", ViewQuery(key = Some(titleKey)))
       byTitleRequest.map {
-        case Right(response) => response.json.as[View].rows.map(postRow => postRow.value.as[Post]).lift(0)
+        response => response.json.as[View].rows.map(postRow => postRow.value.as[Post]).lift(0)
       }
     }
 
     override def getAll: Future[List[Post]] =
       postDesign.view("all").map {
-        case Right(response) => response.json.as[View].rows.map(postRow => postRow.value.as[Post])
+        response => response.json.as[View].rows.map(postRow => postRow.value.as[Post])
       }
+
   }
 }

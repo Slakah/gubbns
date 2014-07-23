@@ -2,6 +2,7 @@ package db
 
 import db.ResponseHandler.FutureResponseWithValidate
 import db.readers.CouchError
+import play.api.libs.ws.WSResponse
 
 import scala.concurrent.Future
 
@@ -11,7 +12,7 @@ class Couch extends ConfigService with WebService {
 
   def database(dbName: DatabaseName): Database = new Database(couchBaseRequest.append(dbName.toString))
 
-  def createDatabase(dbName: DatabaseName): Future[Option[CouchError]] = databaseRequest(dbName).put().validate
+  def createDatabase(dbName: DatabaseName): Future[WSResponse] = databaseRequest(dbName).put().validate
 
   private def databaseRequest(dbName: DatabaseName): RequestHolder = couchBaseRequest.append(dbName.toString)
 }

@@ -1,32 +1,27 @@
 package db
 
-import db.readers.CouchError
-import db.readers.CouchErrorRead._
+import db.error.CouchException
 import play.api.libs.ws.WSResponse
 
 import scala.concurrent.Future
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success, Try}
 
 object ResponseHandler {
 
-  def validate(response: WSResponse): Option[CouchError] = {
-    if (response.status < 400) {
-      None
-    } else {
-      Some(determineError(response))
+  def validate(response: WSResponse): Try[WSResponse] = {
+    if (response.status < 400) Success(response)
+    else {
+      Failure(CouchException(response))
     }
   }
 
-  def determineError(response: WSResponse) = response.json.asOpt[CouchError].getOrElse(fallbackError(response))
-
-  private def fallbackError(response: WSResponse) = CouchError(response.status.toString, response.statusText)
-
   implicit class FutureResponseWithValidate(futureResponse: Future[WSResponse]) {
-    def validate: Future[Option[CouchError]] = futureResponse.map(ResponseHandler.validate)
 
-    def responseWithValidate: Future[Either[CouchError, WSResponse]] =
-      futureResponse.map(response => ResponseHandler.validate(response).toLeft(response))
+    def validate: Future[WSResponse] = futureResponse.flatMap {response =>
+      Future.fromTry(ResponseHandler.validate(response))
+    }
   }
 
 }
