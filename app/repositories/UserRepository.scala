@@ -4,7 +4,7 @@ import models.User
 
 
 trait UserRepository {
-  def findByEmail(email: String): Option[User]
+  def getByEmail(email: String): Option[User]
 }
 
 
@@ -18,8 +18,7 @@ trait CouchUserRepositoryComponent extends UserRepositoryComponent {
   override val userRepository: UserRepository = CouchUserRepository
 
   object CouchUserRepository extends  UserRepository {
-    override def findByEmail(email: String): Option[User] = ???
-
+    override def getByEmail(email: String): Option[User] = ???
   }
 
 }
