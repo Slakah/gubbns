@@ -9,9 +9,6 @@ import play.api.libs.json.Json
 import play.api.{Application, Plugin}
 import repositories.PlayCouchServiceComponent
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Success, Failure}
 
