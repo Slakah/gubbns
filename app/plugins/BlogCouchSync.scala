@@ -13,6 +13,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Success, Failure}
 
 object BlogStructure {
 
@@ -37,18 +38,16 @@ object BlogCouchSync {
   val couchSync = new CouchSync with PlayCouchServiceComponent
 
   def sync() = {
-    val sync = couchSync.sync(BlogStructure.blogStructure)
-    sync.onFailure {
-      case ex: Throwable => Logger.error("While syncing the CouchDB design documents the following error occurred", ex)
+    couchSync.sync(BlogStructure.blogStructure).onComplete {
+      case Success(_) => Logger.info("Successfully synced CouchDB design documents")
+      case Failure(ex) => Logger.error("While syncing the CouchDB design documents the following error occurred", ex)
     }
-    sync
   }
 
 }
 
 case class BlogCouchSyncPlugin(app: Application) extends Plugin {
   override def onStart() {
-    Logger.info("Creating blog couchdb structure")
-    Await.ready(BlogCouchSync.sync(), 60.seconds)
+    BlogCouchSync.sync()
   }
 }
