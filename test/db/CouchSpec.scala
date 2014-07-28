@@ -3,6 +3,9 @@ package db
 import org.specs2.mutable._
 import db.DatabaseName.StringWithToDatabaseName
 import org.specs2.mock.Mockito
+import play.api.libs.ws.WSResponse
+
+import scala.concurrent.Future
 
 class CouchSpec extends Specification with Mockito {
   "Couch" should {
@@ -25,19 +28,10 @@ class CouchSpec extends Specification with Mockito {
 
     "create a database" in {
       mockWebService.put(s"http://localhost:5984/$databaseName") returns Mocks.validFutureResponse
-
-      couch.createDatabase(databaseName.asDatabaseName)
+      val databaseResponse: Future[WSResponse] = couch.createDatabase(databaseName.asDatabaseName)
+      databaseResponse should be(Mocks.validResponse).await
 
       there was one(mockWebService).put(s"http://localhost:5984/$databaseName")
-    }
-
-
-    "delete a database" in {
-      mockWebService.delete(s"http://localhost:5984/$databaseName") returns Mocks.validFutureResponse
-
-      couch.deleteDatabase(databaseName.asDatabaseName)
-
-      there was one(mockWebService).delete(s"http://localhost:5984/$databaseName")
     }
   }
 }

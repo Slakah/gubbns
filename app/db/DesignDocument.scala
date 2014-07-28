@@ -40,13 +40,14 @@ case class ViewQuery(key: Option[String] = None) {
 case class DesignDocument(designRequest: RequestHolder) {
   import db.RequestHelper.RequestHelper
 
-
-  def createOrUpdate(json: String) = designRequest.put(json).validateWithError()
-
   def view(view: String, viewQuery: ViewQuery = ViewQuery()): Future[WSResponse] =
-    designRequest.append("_view").append(view).appendQuery(viewQuery.toQueryString).get().validateWithError()
+    designRequest.append("_view").append(view).appendQuery(viewQuery.toQueryString).get().validate
 
-  def doesExist(): Future[Boolean] = designRequest.doesExist()
+  def createIfNoneExist(json: String): Future[Unit] = designRequest.ifNotExist {() => requestCreate(json)}
 
-  def createIfNoneExist(json: String): Future[Unit] = designRequest.ifNotExist(() => createOrUpdate(json))
+  def doesExist: Future[Boolean] = designRequest.doesExist()
+
+  def create(json: String): Future[WSResponse] = requestCreate(json).validate
+
+  private val requestCreate: String => Future[WSResponse]  = designRequest.put
 }

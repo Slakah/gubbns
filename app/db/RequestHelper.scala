@@ -1,26 +1,35 @@
 package db
-import scala.concurrent.Future
+
+import db.error.CouchException
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.ws.WSResponse
+import db.ResponseHandler.FutureResponseWithValidate
+import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 object RequestHelper {
   implicit class RequestHelper(request: RequestHolder) {
 
-    def ifNotExist[A](f: () => Future[A]): Future[Unit] = {
-      doesExist().collect({
-          case false => f().map(_ => ())
-          case true => ()
-      })
+    def ifNotExist(f: () => Future[WSResponse]): Future[Unit] = {
+      val fIfNotExists = for {
+        exists <- doesExist()
+        if !exists
+      } yield {
+        f().validate
+        ()
+      }
+
+      fIfNotExists.fallbackTo(Future(()))
     }
 
-
     def doesExist(): Future[Boolean] = {
-      request.get().map(_.status match {
-          case 404 => false
-          case 200 => true
-          case errorStatus =>
-            throw new IllegalStateException( s"""Expected status code OK (200) or Not Found (404), got "${errorStatus}" """)
+      request.get().map {response =>
+        response.status match {
+          case 404 => Success(false)
+          case 200 => Success(true)
+          case errorStatus => Failure(CouchException(response))
         }
-      )
+      }.flatMap(Future.fromTry(_))
     }
   }
 }

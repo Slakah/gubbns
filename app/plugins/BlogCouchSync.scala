@@ -1,15 +1,19 @@
 package plugins
 
-import play.api.{Application, Plugin}
-import play.Logger
-import db.{DesignStructure, DatabaseStructure, CouchStructure, CouchSync}
 import db.DatabaseName.StringWithToDatabaseName
 import db.readers.DesignFormat.designFormats
-import db.readers.{ViewFunction, Design}
+import db.readers.{Design, ViewFunction}
+import db.{CouchStructure, CouchSync, DatabaseStructure, DesignStructure}
+import play.Logger
 import play.api.libs.json.Json
+import play.api.{Application, Plugin}
 import repositories.PlayCouchServiceComponent
+
+import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.concurrent.{Await, Future}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Success, Failure}
 
 object BlogStructure {
 
@@ -33,14 +37,17 @@ object BlogStructure {
 object BlogCouchSync {
   val couchSync = new CouchSync with PlayCouchServiceComponent
 
-  def sync(): Future[Unit] = {
-    couchSync.sync(BlogStructure.blogStructure)
+  def sync() = {
+    couchSync.sync(BlogStructure.blogStructure).onComplete {
+      case Success(_) => Logger.info("Successfully synced CouchDB design documents")
+      case Failure(ex) => Logger.error("While syncing the CouchDB design documents the following error occurred", ex)
+    }
   }
+
 }
 
 case class BlogCouchSyncPlugin(app: Application) extends Plugin {
   override def onStart() {
-    Logger.info("Creating blog couchdb structure")
-    Await.ready(BlogCouchSync.sync(), 60.seconds)
+    BlogCouchSync.sync()
   }
 }
