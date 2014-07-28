@@ -9,7 +9,7 @@ class CouchUserRepositorySpec extends Specification with Mockito
 
   "CouchServiceComponent" should {
     "find user joe@gmail.com" in {
-      userRepository.getByEmail("joe@gmail.com") must beSome("")
+      userRepository.fetchByEmail("joe@gmail.com") must beSome("")
     }
   }
 }
