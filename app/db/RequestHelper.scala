@@ -11,10 +11,15 @@ object RequestHelper {
   implicit class RequestHelper(request: RequestHolder) {
 
     def ifNotExist(f: () => Future[WSResponse]): Future[Unit] = {
-      for {
+      val fIfNotExists = for {
         exists <- doesExist()
         if !exists
-      } yield f().validate
+      } yield {
+        f().validate
+        ()
+      }
+
+      fIfNotExists.fallbackTo(Future(()))
     }
 
     def doesExist(): Future[Boolean] = {

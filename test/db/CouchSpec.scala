@@ -29,7 +29,7 @@ class CouchSpec extends Specification with Mockito {
     "create a database" in {
       mockWebService.put(s"http://localhost:5984/$databaseName") returns Mocks.validFutureResponse
       val databaseResponse: Future[WSResponse] = couch.createDatabase(databaseName.asDatabaseName)
-      databaseResponse should be(Mocks.validFutureResponse)
+      databaseResponse should be(Mocks.validResponse).await
 
       there was one(mockWebService).put(s"http://localhost:5984/$databaseName")
     }
