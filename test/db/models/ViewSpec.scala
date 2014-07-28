@@ -1,9 +1,9 @@
-package db.readers
+package db.models
 
 import play.api.libs.json._
 
 import org.specs2.mutable.Specification
-import db.readers.ViewRead._
+import db.models.ViewRead._
 
 class ViewSpec extends Specification {
   "View" should {

@@ -1,7 +1,7 @@
-package db.readers
+package db.models
 
 import play.api.libs.json._
-import db.readers.CouchErrorRead.couchReads
+import db.models.CouchErrorRead.couchReads
 import org.specs2.mutable._
 
 class CouchErrorSpec extends Specification {

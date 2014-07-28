@@ -1,8 +1,8 @@
 package repositories
 
 import db.ViewQuery
-import db.readers.View
-import db.readers.ViewRead.viewReads
+import db.models.View
+import db.models.ViewRead.viewReads
 import models.Post
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsString, Json}

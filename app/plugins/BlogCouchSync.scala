@@ -1,8 +1,8 @@
 package plugins
 
 import db.DatabaseName.StringWithToDatabaseName
-import db.readers.DesignFormat.designFormats
-import db.readers.{Design, ViewFunction}
+import db.models.DesignFormat.designFormats
+import db.models.{Design, ViewFunction}
 import db.{CouchStructure, CouchSync, DatabaseStructure, DesignStructure}
 import play.Logger
 import play.api.libs.json.Json

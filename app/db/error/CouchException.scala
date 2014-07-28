@@ -1,7 +1,7 @@
 package db.error
 
-import db.readers.CouchError
-import db.readers.CouchErrorRead.couchReads
+import db.models.CouchError
+import db.models.CouchErrorRead.couchReads
 import play.api.libs.ws.WSResponse
 
 case class CouchException(message: String) extends Exception(message)

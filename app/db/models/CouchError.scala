@@ -1,4 +1,4 @@
-package db.readers
+package db.models
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._

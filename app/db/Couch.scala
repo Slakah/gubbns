@@ -1,7 +1,7 @@
 package db
 
 import db.ResponseHandler.FutureResponseWithValidate
-import db.readers.CouchError
+import db.models.CouchError
 import play.api.libs.ws.WSResponse
 
 import scala.concurrent.Future

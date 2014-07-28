@@ -1,4 +1,4 @@
-package db.readers
+package db.models
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
@@ -48,7 +48,7 @@ case class Design(id: String, rev: Option[String] = None, language: String = "ja
 
 object DesignFormat {
 
-  import db.readers.ViewFunctionFormat.listViewFunctionFormat
+  import db.models.ViewFunctionFormat.listViewFunctionFormat
 
 
   implicit val designFormats: Format[Design] = (

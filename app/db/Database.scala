@@ -1,6 +1,6 @@
 package db
 
-import db.readers.CouchError
+import db.models.CouchError
 
 import scala.concurrent.Future
 import play.api.libs.ws.WSResponse

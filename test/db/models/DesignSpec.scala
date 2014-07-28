@@ -1,4 +1,4 @@
-package db.readers
+package db.models
 
 import org.specs2.mutable.Specification
 import play.api.libs.json.Json
@@ -6,7 +6,7 @@ import play.api.libs.json.Json
 
 class DesignSpec extends Specification {
   "Design" should {
-    import db.readers.DesignFormat.designFormats
+    import db.models.DesignFormat.designFormats
 
     "parse design json" in {
       val designJson = Json.parse( """{
@@ -50,7 +50,7 @@ class DesignSpec extends Specification {
   }
 
   "ViewFunction" should {
-    import db.readers.ViewFunctionFormat.listViewFunctionFormat
+    import db.models.ViewFunctionFormat.listViewFunctionFormat
 
     "parse view function map only json" in {
       val designJson = Json.parse( """{
