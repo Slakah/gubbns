@@ -1,7 +1,6 @@
 package db
 
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import repositories.CouchServiceComponent
 
 import scala.concurrent.Future
 
@@ -14,8 +13,7 @@ case class CouchStructure(databases: Set[DatabaseStructure])
 /**
  * Used to sync a proposed couch structure with the couchdb instance
  */
-trait CouchSync {
-  this: CouchServiceComponent =>
+class CouchSync(couch: Couch) {
 
   /**
    * Sync the proposed couch structure with the database
@@ -27,7 +25,7 @@ trait CouchSync {
   }
 
   private def createDatabasesAndDesigns(dbStructure: DatabaseStructure): Future[Set[Unit]] = {
-    val database = couchService.couch.database(dbStructure.dbName)
+    val database = couch.database(dbStructure.dbName)
     database.createIfNoneExist().flatMap { _ =>
       createDesigns(database, dbStructure.designs)
     }

@@ -19,17 +19,16 @@ trait PostRepositoryComponent {
   val postRepository: PostRepository
 }
 
-import db.DatabaseName._
 import models.PostFormat.postFormats
 
 trait CouchPostRepositoryComponent extends PostRepositoryComponent {
-  this: CouchServiceComponent =>
+  this: BlogCouchServiceComponent =>
 
   val postRepository: PostRepository = CouchPostRepository
 
   object CouchPostRepository extends PostRepository {
-    private val db = couchService.couch.database("blog".asDatabaseName)
-    private val postDesign = db.databaseDesign("post")
+    private val db = blogService.blogDb
+    private val postDesign = blogService.postDesign
 
     override def findByTitle(rawTitle: String): Future[Option[Post]] = {
       val titleKey = Json.stringify(JsString(rawTitle))
@@ -43,6 +42,5 @@ trait CouchPostRepositoryComponent extends PostRepositoryComponent {
       postDesign.view("all").map {
         response => response.json.as[View].rows.map(postRow => postRow.value.as[Post])
       }
-
   }
 }

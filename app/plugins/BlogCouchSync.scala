@@ -1,5 +1,6 @@
 package plugins
 
+import components.Default
 import db.DatabaseName.StringWithToDatabaseName
 import db.models.DesignFormat.designFormats
 import db.models.{Design, ViewFunction}
@@ -7,8 +8,6 @@ import db.{CouchStructure, CouchSync, DatabaseStructure, DesignStructure}
 import play.Logger
 import play.api.libs.json.Json
 import play.api.{Application, Plugin}
-import repositories.PlayCouchServiceComponent
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Success, Failure}
 
@@ -31,8 +30,8 @@ object BlogStructure {
 
 }
 
-object BlogCouchSync {
-  val couchSync = new CouchSync with PlayCouchServiceComponent
+object BlogCouchSync extends Default {
+  val couchSync = new CouchSync(couchService.couch)
 
   def sync() = {
     couchSync.sync(BlogStructure.blogStructure).onComplete {
