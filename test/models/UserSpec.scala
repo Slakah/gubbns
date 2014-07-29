@@ -16,8 +16,6 @@ class UserSpec extends Specification {
                                    "hashedPassword": "$2a$10$iXIfki6AefgcUsPqR.niQ.FvIK8vdcfup09YmUxmzS/sQeuI3QOFG"
                                 }""")
       val user = userJson.as[User]
-      //user._id must equalTo("d8dd32adaac7e6e476dc658458001422")
-      //user._rev must beSome("17-4f9603c31a1813280c46c7e124d62562")
       user.email must equalTo("joe@gmail.com")
       user.hashedPassword must equalTo("$2a$10$iXIfki6AefgcUsPqR.niQ.FvIK8vdcfup09YmUxmzS/sQeuI3QOFG")
     }
