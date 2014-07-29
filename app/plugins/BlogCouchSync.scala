@@ -13,17 +13,26 @@ import scala.util.{Success, Failure}
 
 object BlogStructure {
 
-  val postDesign = Design(id = "post", views = Set(
-    ViewFunction(name = "all", map = Some("function(doc) {if (doc.typeId===\"post\") {emit(doc.published, doc);}}")),
-    ViewFunction(name = "by_title", map = Some("function(doc) {if (doc.typeId===\"post\") {emit(decodeURIComponent(doc.title.toLowerCase().replace(/\\s+/g, \"-\")), doc);}}"))
-  ))
+  val postDesign = Design(id = "post",
+    views = Set(
+      ViewFunction(name = "all", map = Some("function(doc) {if (doc.typeId===\"post\") {emit(doc.published, doc);}}")),
+      ViewFunction(name = "by_title", map = Some("function(doc) {if (doc.typeId===\"post\") {emit(decodeURIComponent(doc.title.toLowerCase().replace(/\\s+/g, \"-\")), doc);}}"))
+    )
+  )
+
+  val userDesign = Design(id = "user",
+    views = Set(
+      ViewFunction(name = "by_email", map = Some("function(doc) {if (doc.typeId===\"post\") {emit(doc.email, doc);}}"))
+    )
+  )
 
   val blogStructure = CouchStructure(
     Set(
       DatabaseStructure(dbName = "blog".asDatabaseName,
-        designs = Set(DesignStructure("post",
-          Json.prettyPrint(Json.toJson(postDesign))
-        ))
+        designs = Set(
+          DesignStructure("post", Json.prettyPrint(Json.toJson(postDesign))),
+          DesignStructure("user", Json.prettyPrint(Json.toJson(userDesign)))
+        )
       )
     )
   )
