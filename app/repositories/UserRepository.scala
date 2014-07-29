@@ -13,7 +13,7 @@ trait UserRepositoryComponent {
 }
 
 trait CouchUserRepositoryComponent extends UserRepositoryComponent {
-  this: CouchServiceComponent =>
+  this: BlogCouchServiceComponent =>
 
   override val userRepository: UserRepository = CouchUserRepository
 
