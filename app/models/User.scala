@@ -3,9 +3,7 @@ package models
 import play.api.libs.json.Json
 
 
-case class User(_id: String,
-                _rev: Option[String] = None,
-                email: String,
+case class User(email: String,
                 hashedPassword: String)
 
 
