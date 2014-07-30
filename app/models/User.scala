@@ -8,5 +8,5 @@ case class User(email: String,
 
 
 object UserFormat {
-  implicit val userReads = Json.reads[User]
+  implicit val userFormats = Json.format[User]
 }

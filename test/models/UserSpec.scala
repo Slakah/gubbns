@@ -3,7 +3,7 @@ package models
 import org.specs2.mutable.Specification
 import play.api.libs.json.Json
 
-import models.UserFormat.userReads
+import models.UserFormat.userFormats
 
 class UserSpec extends Specification {
   "User" should {
