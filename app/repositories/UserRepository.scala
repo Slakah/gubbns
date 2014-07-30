@@ -1,5 +1,6 @@
 package repositories
 
+import db.ViewQuery
 import db.models.View
 import models.User
 import play.api.libs.json.{JsString, Json}
@@ -26,7 +27,7 @@ trait CouchUserRepositoryComponent extends UserRepositoryComponent {
   object CouchUserRepository extends UserRepository {
     override def fetchByEmail(email: String): Future[Option[User]] = {
       val emailKey = Json.stringify(JsString(email))
-      val byEmailRequest = blogService.postDesign.view("by_email")
+      val byEmailRequest = blogService.postDesign.view("by_email", ViewQuery(key = Some(emailKey)))
       byEmailRequest.map { response =>
         response.json.as[View].rows.map(userRow => userRow.value.as[User]).lift(0)
       }
