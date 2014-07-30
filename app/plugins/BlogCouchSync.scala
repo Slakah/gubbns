@@ -52,7 +52,7 @@ object BlogCouchSync extends Default {
 }
 
 case class BlogCouchSyncPlugin(app: Application) extends Plugin {
-  override def onStart() {
+  override def onStart() = {
     BlogCouchSync.sync()
   }
 }

@@ -1,12 +1,14 @@
 package repositories
 
-import db.{DesignDocument, ViewQuery}
+import db.DesignDocument
+import db.models.{View, ViewRow}
 import models.User
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, Json}
 import db.Mocks.validFutureResponse
 import models.UserFormat.userFormats
+import db.models.ViewFormat.viewFormats
 
 
 class CouchUserRepositorySpec extends Specification with Mockito {
@@ -29,7 +31,9 @@ class CouchUserRepositorySpec extends Specification with Mockito {
 
       mockBlogService.postDesign returns mockPostDesign
 
-      mockPostDesign.view("by_email") returns validFutureResponse(userJson)
+      val view = View(0, List(ViewRow("1", JsString(email), userJson)), 1)
+
+      mockPostDesign.view("by_email") returns validFutureResponse(Json.toJson(view))
 
       userRepository.fetchByEmail(email) must beSome(user).await
     }

@@ -2,7 +2,7 @@ package repositories
 
 import db.ViewQuery
 import db.models.View
-import db.models.ViewRead.viewReads
+import db.models.ViewFormat.viewFormats
 import models.Post
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsString, Json}

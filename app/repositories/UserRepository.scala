@@ -1,11 +1,10 @@
 package repositories
 
-import db.ViewQuery
 import db.models.View
 import models.User
 import play.api.libs.json.{JsString, Json}
 import scala.concurrent.Future
-import db.models.ViewRead._
+import db.models.ViewFormat.viewFormats
 import models.UserFormat.userFormats
 import play.api.libs.concurrent.Execution.Implicits._
 
