@@ -9,7 +9,9 @@ import play.Logger
 import play.api.libs.json.Json
 import play.api.{Application, Plugin}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Await
 import scala.util.{Success, Failure}
+import scala.concurrent.duration._
 
 object BlogStructure {
 
@@ -43,16 +45,18 @@ object BlogCouchSync extends Default {
   val couchSync = new CouchSync(couchService.couch)
 
   def sync() = {
-    couchSync.sync(BlogStructure.blogStructure).onComplete {
+    val syncAction = couchSync.sync(BlogStructure.blogStructure)
+    syncAction.onComplete {
       case Success(_) => Logger.info("Successfully synced CouchDB design documents")
       case Failure(ex) => Logger.error("While syncing the CouchDB design documents the following error occurred", ex)
     }
+    syncAction
   }
 
 }
 
 case class BlogCouchSyncPlugin(app: Application) extends Plugin {
   override def onStart() = {
-    BlogCouchSync.sync()
+    Await.ready(BlogCouchSync.sync(), 5.seconds)
   }
 }
