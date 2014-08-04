@@ -8,17 +8,13 @@ case class ViewRow(id: String, key: JsValue, value: JsValue)
 
 case class View(offset: Long, rows: List[ViewRow], totalRows: Long)
 
-object ViewRead {
+object ViewFormat {
 
-  implicit val viewRowReads = (
-    (__ \ "id").read[String] and
-      (__ \ "key").read[JsValue] and
-      (__ \ "value").read[JsValue]
-    )(ViewRow)
+  implicit val viewRowFormats = Json.format[ViewRow]
 
-  implicit val viewReads = (
-    (__ \ "offset").read[Long] and
-      (__ \ "rows").read[List[ViewRow]] and
-      (__ \ "total_rows").read[Long]
-    )(View)
+  implicit val viewFormats = (
+    (__ \ "offset").format[Long] and
+      (__ \ "rows").format[List[ViewRow]] and
+      (__ \ "total_rows").format[Long]
+    )(View.apply, unlift(View.unapply))
 }
