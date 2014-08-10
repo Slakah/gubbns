@@ -11,6 +11,9 @@ GET     /blog                       controllers.Blog.index()
 #GET     /blog/add                   controllers.Blog.add()
 GET     /blog/:title                controllers.Blog.title(title: String)
 
+# Login
+GET     /login                       controllers.Login.login()
+
 
 # About
 GET     /about                      controllers.About.index()
