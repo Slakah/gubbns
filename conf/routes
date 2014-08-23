@@ -13,7 +13,7 @@ GET     /blog/:title                controllers.Blog.title(title: String)
 
 # Login
 GET     /login                       controllers.Login.login()
-
+POST    /login                       controllers.Login.loginPost()
 
 # About
 GET     /about                      controllers.About.index()

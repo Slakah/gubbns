@@ -1,2 +1,9 @@
 @(userForm: Form[User])
 
+@import helper._
+
+@form(action = routes.Login.loginPost()) {
+    @inputText(userForm("email"))
+    @inputPassword(userForm("password"))
+    <button>login</button>
+}
