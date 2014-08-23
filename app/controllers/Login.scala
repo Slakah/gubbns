@@ -13,12 +13,17 @@ object Login extends Application {
     )(User.apply)(User.unapply)
   )
 
-  def login() = Action { implicit request =>
+  def login() = Action {
+    Ok(views.html.login.login(userForm))
+  }
+
+  def loginPost() = Action { implicit request =>
     userForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest(views.html.login.login(formWithErrors))
       },
       userData => {
+
         Redirect(routes.Home.index)
       }
     )
