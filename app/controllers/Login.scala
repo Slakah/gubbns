@@ -32,7 +32,7 @@ object Login extends Application {
         Futures.successful(BadRequest(views.html.login.login(formWithErrors))),
       validForm => {
         isValidLogin(validForm).map {
-          case true => Redirect(routes.Home.index).withSession(
+          case true => Redirect(routes.Home.index).withNewSession(
             "email" -> validForm.email,
             "login-time" -> isoFormat.print(DateTime.now)
           )
