@@ -21,7 +21,7 @@ object Login extends Application {
   )
 
   def login() = Action {
-    Ok(views.html.login.login(loginForm))
+    Ok(views.html.user.login(loginForm))
   }
 
   val isoFormat = ISODateTimeFormat.dateTime
@@ -29,16 +29,16 @@ object Login extends Application {
   def loginPost() = Action.async { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors =>
-        Futures.successful(BadRequest(views.html.login.login(formWithErrors))),
+        Futures.successful(BadRequest(views.html.user.login(formWithErrors))),
       validForm => {
         isValidLogin(validForm).map {
-          case true => Redirect(routes.Home.index).withNewSession(
+          case true => Redirect(routes.Home.index).withSession(
             "email" -> validForm.email,
             "login-time" -> isoFormat.print(DateTime.now)
           )
           case false =>
             val badForm = loginForm.fill(validForm).withGlobalError("Incorrect email or password")
-            BadRequest(views.html.login.login(badForm))
+            BadRequest(views.html.user.login(badForm))
         }
       }
     )
