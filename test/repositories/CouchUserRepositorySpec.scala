@@ -27,15 +27,15 @@ class CouchUserRepositorySpec extends Specification with Mockito {
       val user = User(email, "$2a$10$iXIfki6AefgcUsPqR.niQ.FvIK8vdcfup09YmUxmzS/sQeuI3QOFG")
       val userJson = Json.toJson(user)
 
-      val mockPostDesign = mock[DesignDocument]
+      val mockUserDesign = mock[DesignDocument]
 
-      mockBlogService.postDesign returns mockPostDesign
+      mockBlogService.userDesign returns mockUserDesign
 
       val view = View(0, List(ViewRow("1", JsString(email), userJson)), 1)
 
       val emailKey = Json.stringify(JsString(email))
 
-      mockPostDesign.view("by_email", ViewQuery(key = Some(emailKey))) returns validFutureResponse(Json.toJson(view))
+      mockUserDesign.view("by_email", ViewQuery(key = Some(emailKey))) returns validFutureResponse(Json.toJson(view))
 
       userRepository.fetchByEmail(email) must beSome(user).await
     }
