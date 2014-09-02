@@ -12,7 +12,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.concurrent.Future
 
-object Login extends Application {
+object Auth extends Application {
   val loginForm = Form(
     mapping(
       "email" -> email,
@@ -50,5 +50,9 @@ object Login extends Application {
         login.password.isBcrypted(user.hashedPassword)
       case None => false
     }
+  }
+
+  def logoutPost() = Action {
+    Redirect(routes.Home.index).withNewSession
   }
 }
