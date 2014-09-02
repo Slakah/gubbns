@@ -12,11 +12,11 @@ GET     /blog                       controllers.Blog.index()
 GET     /blog/:title                controllers.Blog.title(title: String)
 
 # Login
-GET     /login                       controllers.Login.login()
-POST    /login                       controllers.Login.loginPost()
+GET     /login                       controllers.Auth.login()
+POST    /login                       controllers.Auth.loginPost()
 
 # Logout
-POST    /logout                      controllers.Logout.logoutPost()
+POST    /logout                      controllers.Auth.logoutPost()
 
 # About
 GET     /about                      controllers.About.index()

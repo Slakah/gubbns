@@ -2,7 +2,7 @@
 
 @import helper._
 
-@form(action = routes.Login.loginPost()) {
+@form(action = routes.Auth.loginPost()) {
     @inputText(userForm("email"))
     @inputPassword(userForm("password"))
     <button>login</button>
