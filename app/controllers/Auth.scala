@@ -29,7 +29,7 @@ object Auth extends Application {
   def loginPost() = Action.async { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors =>
-        Futures.successful(BadRequest(views.html.user.login(formWithErrors))),
+        Futures.successful(Unauthorized(views.html.user.login(formWithErrors))),
       validForm => {
         isValidLogin(validForm).map {
           case true => Redirect(routes.Home.index).withSession(
@@ -38,7 +38,7 @@ object Auth extends Application {
           )
           case false =>
             val badForm = loginForm.fill(validForm).withGlobalError("Incorrect email or password")
-            BadRequest(views.html.user.login(badForm))
+            Unauthorized(views.html.user.login(badForm))
         }
       }
     )
