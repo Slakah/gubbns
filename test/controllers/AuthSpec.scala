@@ -38,7 +38,20 @@ class AuthSpec extends Specification with Mockito {
       val loginRequest = FakeRequest(POST, "/")
         .withFormUrlEncodedBody(
           ("email", email),
-          ("password", "incorrectpassword".bcrypt))
+          ("password", "incorrectpassword"))
+
+      val loginResponse = SingleAuth.loginPost()(loginRequest)
+      status(loginResponse) must equalTo(UNAUTHORIZED)
+    }
+
+    val unknownEmail = "unknown@email.com"
+    singleUserRepository.fetchByEmail(unknownEmail) returns Future.successful(None)
+
+    "be unauthorised for unknown email" in new WithApplication {
+      val loginRequest = FakeRequest(POST, "/")
+        .withFormUrlEncodedBody(
+          ("email", unknownEmail),
+          ("password", password))
 
       val loginResponse = SingleAuth.loginPost()(loginRequest)
       status(loginResponse) must equalTo(UNAUTHORIZED)
