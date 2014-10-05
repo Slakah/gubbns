@@ -33,6 +33,7 @@ class AuthSpec extends Specification with Mockito {
 
       val loginResponse = SingleAuth.loginPost()(loginRequest)
       status(loginResponse) must equalTo(ACCEPTED)
+      session(loginResponse).get("email") must beSome(email)
     }
     "be unauthorised for incorrect password" in new WithApplication {
       val loginRequest = FakeRequest(POST, "/")
@@ -42,6 +43,7 @@ class AuthSpec extends Specification with Mockito {
 
       val loginResponse = SingleAuth.loginPost()(loginRequest)
       status(loginResponse) must equalTo(UNAUTHORIZED)
+      session(loginResponse).get("email") must beNone
     }
 
     val unknownEmail = "unknown@email.com"
@@ -55,6 +57,7 @@ class AuthSpec extends Specification with Mockito {
 
       val loginResponse = SingleAuth.loginPost()(loginRequest)
       status(loginResponse) must equalTo(UNAUTHORIZED)
+      session(loginResponse).get("email") must beNone
     }
   }
 }
