@@ -20,18 +20,8 @@ object ResponseHandler {
   implicit class FutureResponseWithValidate(futureResponse: Future[WSResponse]) {
 
     def validate: Future[WSResponse] = futureResponse.flatMap {response =>
-      fromTry(ResponseHandler.validate(response))
+      Future.fromTry(ResponseHandler.validate(response))
     }
   }
 
-  /**
-   * Replace this with Future.fromTry in scala 2.11
-   * @param t
-   * @tparam A
-   * @return
-   */
-  def fromTry[A](t: Try[A]): Future[A] = t match {
-    case Success(s) => Future.successful(s)
-    case Failure(f) => Future.failed(f)
-  }
 }
