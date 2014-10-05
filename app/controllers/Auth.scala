@@ -4,15 +4,18 @@ import akka.dispatch.Futures
 import models.LoginForm
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
-import play.api.mvc.Action
+import play.api.mvc.{Controller, Action}
 import play.api.data._
 import play.api.data.Forms._
 import com.github.t3hnar.bcrypt._
 import play.api.libs.concurrent.Execution.Implicits._
+import repositories.UserRepositoryComponent
 
 import scala.concurrent.Future
 
-object Auth extends Application {
+object Auth extends AuthImpl with Application
+
+trait AuthImpl extends Controller with UserRepositoryComponent {
   val loginForm = Form(
     mapping(
       "email" -> email,
@@ -32,7 +35,7 @@ object Auth extends Application {
         Futures.successful(Unauthorized(views.html.user.login(formWithErrors))),
       validForm => {
         isValidLogin(validForm).map {
-          case true => Redirect(routes.Home.index).withSession(
+          case true => Redirect(routes.Home.index.url, ACCEPTED).withSession(
             "email" -> validForm.email,
             "login-time" -> isoFormat.print(DateTime.now)
           )
@@ -56,3 +59,4 @@ object Auth extends Application {
     Redirect(routes.Home.index).withNewSession
   }
 }
+

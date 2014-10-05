@@ -6,5 +6,5 @@ object About extends Controller {
   def index = Action {
     Ok(views.html.about.render())
   }
-
 }
+

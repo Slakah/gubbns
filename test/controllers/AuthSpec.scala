@@ -1,17 +1,35 @@
 package controllers
 
+import models.User
+import org.specs2.mock.Mockito
 import org.specs2.mutable._
-import play.api.Logger
-import play.api.test.WithBrowser
+import com.github.t3hnar.bcrypt._
+import play.api.mvc.Request
+import play.api.test.{WithApplication, FakeRequest}
+import play.api.test.Helpers._
 
-class AuthSpec extends Specification {
+import scala.concurrent.Future
+
+class AuthSpec extends Specification with Mockito {
+  val email = "joe.bloggs@email.com"
+  val password = "testpassword"
+  val hashedPassword = password.bcrypt
+  val user = User(email, hashedPassword)
+  val futureUser = Future.successful(Some(user))
+
+  val singleUserAuth = mock[AuthImpl]
+  singleUserAuth.userRepository.fetchByEmail(email) returns futureUser
+
+
   "Auth" should {
-    "allow login" in new WithBrowser {
-      browser.goTo(routes.Auth.login.url)
-      browser.fill("#email").`with`("joe.bloggs@email.com")
-      browser.fill("#password").`with`("password")
-      browser.submit("button")
-      Logger.info(browser.pageSource())
+    "allow login" in new WithApplication {
+      val loginRequest = FakeRequest(POST, "/")
+        .withFormUrlEncodedBody(
+          ("email", email),
+          ("password", password))
+
+      val loginResponse = singleUserAuth.loginPost()(loginRequest)
+      status(loginResponse) must equalTo(ACCEPTED)
     }
   }
 }
