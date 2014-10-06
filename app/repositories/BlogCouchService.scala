@@ -7,6 +7,7 @@ import db.DatabaseName._
 trait BlogCouchService {
   def blogDb: Database
   def postDesign: DesignDocument
+  def userDesign: DesignDocument
 }
 
 trait BlogCouchServiceComponent {
@@ -21,6 +22,7 @@ trait PlayBlogCouchServiceComponent extends BlogCouchServiceComponent {
   object PlayBlogCouchService extends BlogCouchService {
     override lazy val blogDb = couchService.couch.database("blog".asDatabaseName)
     override lazy val postDesign = blogDb.databaseDesign("post")
+    override lazy val userDesign = blogDb.databaseDesign("user")
   }
 }
 
