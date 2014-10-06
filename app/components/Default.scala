@@ -1,9 +1,9 @@
 package components
 
 import services._
-import repositories.{PlayCouchServiceComponent, PlayBlogCouchServiceComponent, CouchPostRepositoryComponent}
+import repositories.{CouchUserRepositoryComponent, PlayCouchServiceComponent, PlayBlogCouchServiceComponent, CouchPostRepositoryComponent}
 
 
 trait Default extends Repositories with PostsComponent with PegdownServiceComponent
 
-trait Repositories extends PlayCouchServiceComponent with PlayBlogCouchServiceComponent with CouchPostRepositoryComponent
+trait Repositories extends PlayCouchServiceComponent with PlayBlogCouchServiceComponent with CouchPostRepositoryComponent with CouchUserRepositoryComponent

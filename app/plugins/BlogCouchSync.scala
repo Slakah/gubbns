@@ -24,7 +24,7 @@ object BlogStructure {
 
   val userDesign = Design(id = "user",
     views = Set(
-      ViewFunction(name = "by_email", map = Some("function(doc) {if (doc.typeId===\"post\") {emit(doc.email, doc);}}"))
+      ViewFunction(name = "by_email", map = Some("function(doc) {if (doc.typeId===\"user\") {emit(doc.email, doc);}}"))
     )
   )
 
