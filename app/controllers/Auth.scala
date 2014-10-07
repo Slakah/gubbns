@@ -27,6 +27,9 @@ trait AuthImpl extends Controller with UserRepositoryComponent {
     Ok(views.html.user.login(loginForm))
   }
 
+  def unauthorisedLogin =
+    Unauthorized(views.html.user.login(loginForm))
+
   val isoFormat = ISODateTimeFormat.dateTime
 
   def loginPost() = Action.async { implicit request =>
