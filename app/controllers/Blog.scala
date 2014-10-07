@@ -25,4 +25,8 @@ trait BlogImpl extends Controller
       case None => Future.successful(NotFound)
     }
   }
+
+  def addPost() = Action {
+    Redirect(routes.Blog.index.url, UNAUTHORIZED)
+  }
 }
