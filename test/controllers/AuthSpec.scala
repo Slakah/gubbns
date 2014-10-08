@@ -17,6 +17,15 @@ class AuthSpec extends Specification with Mockito {
   val user = User(email, hashedPassword)
   val futureUser = Future.successful(Some(user))
 
+
+  private def fakeLoginRequest(email: String = email,
+                               password:String = password) = {
+    FakeRequest(POST, routes.Auth.login.url)
+      .withFormUrlEncodedBody(
+        ("email", email),
+        ("password", password))
+  }
+
   val singleUserRepository = mock[UserRepository]
   singleUserRepository.fetchByEmail(email) returns futureUser
 
@@ -26,22 +35,14 @@ class AuthSpec extends Specification with Mockito {
 
   "Auth" should {
     "allow login" in new WithApplication {
-      val loginRequest = FakeRequest(POST, "/")
-        .withFormUrlEncodedBody(
-          ("email", email),
-          ("password", password))
-
-      val loginResponse = SingleAuth.loginPost()(loginRequest)
+      val loginResponse = SingleAuth.loginPost()(fakeLoginRequest())
       status(loginResponse) must equalTo(ACCEPTED)
       session(loginResponse).get("email") must beSome(email)
     }
     "be unauthorised for incorrect password" in new WithApplication {
-      val loginRequest = FakeRequest(POST, "/")
-        .withFormUrlEncodedBody(
-          ("email", email),
-          ("password", "incorrectpassword"))
+      val incorrectPasswordRequest = fakeLoginRequest(password = "incorrectpassword")
 
-      val loginResponse = SingleAuth.loginPost()(loginRequest)
+      val loginResponse = SingleAuth.loginPost()(incorrectPasswordRequest)
       status(loginResponse) must equalTo(UNAUTHORIZED)
       session(loginResponse).get("email") must beNone
     }
@@ -50,12 +51,9 @@ class AuthSpec extends Specification with Mockito {
     singleUserRepository.fetchByEmail(unknownEmail) returns Future.successful(None)
 
     "be unauthorised for unknown email" in new WithApplication {
-      val loginRequest = FakeRequest(POST, "/")
-        .withFormUrlEncodedBody(
-          ("email", unknownEmail),
-          ("password", password))
+      val unknownEmailRequest = fakeLoginRequest(email = unknownEmail)
 
-      val loginResponse = SingleAuth.loginPost()(loginRequest)
+      val loginResponse = SingleAuth.loginPost()(unknownEmailRequest)
       status(loginResponse) must equalTo(UNAUTHORIZED)
       session(loginResponse).get("email") must beNone
     }
