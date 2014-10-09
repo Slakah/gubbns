@@ -8,10 +8,14 @@ import play.api.test.{FakeRequest, WithApplication}
 class BlogSpec extends Specification with Mockito {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> dfe924851c67ae256dfaa451b66ef7f13e2fa73a
 
   "Blog" should {
     "allow adding of posts" in {
       "disabled when unauthorised" in new WithApplication {
+<<<<<<< HEAD
 =======
   "Blog" should {
     "allow adding of posts" in {
@@ -23,6 +27,8 @@ class BlogSpec extends Specification with Mockito {
     "allow adding of posts" in {
       "disabled when unauthorised" in new WithApplication {
 >>>>>>> add unauthorised case for add blog post + fix security to allow Future[Result]
+=======
+>>>>>>> dfe924851c67ae256dfaa451b66ef7f13e2fa73a
         val addPostRequest = FakeRequest(POST, "/")
         val addPostResponse = Blog.addPost()(addPostRequest)
         status(addPostResponse) must equalTo(UNAUTHORIZED)
