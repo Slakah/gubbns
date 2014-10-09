@@ -9,7 +9,7 @@ trait Security extends Status {
   def email(request: RequestHeader) = request.session.get("email")
 
   object Authenticated
-    extends AuthenticatedBuilder[String](request => email(request), request => Auth.unauthorisedLogin)
+    extends AuthenticatedBuilder[String](request => email(request), request => Auth.unauthorisedLogin(request))
 
 }
 

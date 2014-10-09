@@ -4,7 +4,7 @@ import akka.dispatch.Futures
 import models.LoginForm
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
-import play.api.mvc.{Controller, Action}
+import play.api.mvc.{RequestHeader, Controller, Action}
 import play.api.data._
 import play.api.data.Forms._
 import com.github.t3hnar.bcrypt._
@@ -28,8 +28,9 @@ trait AuthImpl extends Controller with UserRepositoryComponent {
     Ok(views.html.user.login(loginForm))
   }
 
-  def unauthorisedLogin =
-    Unauthorized(views.html.user.login(loginForm))
+  def unauthorisedLogin = { implicit request: RequestHeader =>
+    Unauthorized(views.html.user.login(loginForm)(getToken(request)))
+  }
 
   val isoFormat = ISODateTimeFormat.dateTime
 
