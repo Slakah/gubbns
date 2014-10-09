@@ -9,6 +9,7 @@ scalaVersion := "2.11.2"
 libraryDependencies ++= Seq(
   cache,
   ws,
+  filters,
   "org.specs2" %% "specs2" % "2.3.12" % "test",
   "org.mockito" % "mockito-core" % "1.9.5" % "test",
   "org.pegdown" % "pegdown" % "1.4.2",
