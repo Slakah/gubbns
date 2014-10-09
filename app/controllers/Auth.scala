@@ -10,6 +10,7 @@ import play.api.data.Forms._
 import com.github.t3hnar.bcrypt._
 import play.api.libs.concurrent.Execution.Implicits._
 import repositories.UserRepositoryComponent
+import play.filters.csrf.CSRF.Token.getToken
 
 import scala.concurrent.Future
 
@@ -23,7 +24,7 @@ trait AuthImpl extends Controller with UserRepositoryComponent {
     )(LoginForm.apply)(LoginForm.unapply)
   )
 
-  def login() = Action {
+  def login() = Action { implicit request =>
     Ok(views.html.user.login(loginForm))
   }
 

@@ -1,6 +1,5 @@
-/**
- * Created by collij37 on 09/10/2014.
- */
-object Global {
+import play.api.GlobalSettings
+import play.api.mvc.WithFilters
+import play.filters.csrf.CSRFFilter
 
-}
+object Global extends WithFilters(CSRFFilter()) with GlobalSettings
