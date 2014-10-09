@@ -13,9 +13,6 @@ GET     /blog/:title                controllers.Blog.title(title: String)
 GET     /login                       controllers.Auth.login()
 POST    /login                       controllers.Auth.loginPost()
 
-# Logout
-POST    /logout                      controllers.Auth.logoutPost()
-
 # About
 GET     /about                      controllers.About.index()
 

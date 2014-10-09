@@ -55,9 +55,5 @@ trait AuthImpl extends Controller with UserRepositoryComponent {
       case None => false
     }
   }
-
-  def logoutPost() = Action {
-    Redirect(routes.Home.index).withNewSession
-  }
 }
 
