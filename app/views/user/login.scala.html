@@ -1,9 +1,10 @@
-@(userForm: Form[LoginForm])
+@(userForm: Form[LoginForm])(implicit token: play.filters.csrf.CSRF.Token)
 
 @import helper._
 
 @form(action = routes.Auth.loginPost()) {
     @inputText(userForm("email"))
     @inputPassword(userForm("password"))
+    @CSRF.formField
     <button>login</button>
 }
