@@ -1,13 +1,11 @@
 package controllers
 
 import akka.dispatch.Futures
-import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.Security.AuthenticatedRequest
-import play.api.mvc.{RequestHeader, Controller, Action}
+import play.api.mvc.{Controller, Action}
 import play.api.libs.concurrent.Execution.Implicits._
-import models.{Post, DisplayPost}
+import models.{PostForm, DisplayPost}
 import services.{MarkdownServiceComponent, PostServiceComponent}
 import scala.concurrent.Future
 
@@ -28,12 +26,6 @@ trait BlogImpl extends Controller with Security
     posts.findByTitle(title).flatMap {
       case Some(matchingPost) => DisplayPost(matchingPost)(markdown).map(displayPost => Ok(views.html.blog.single(displayPost, None, None)))
       case None => Future.successful(NotFound)
-    }
-  }
-
-  case class PostForm(title: String, content: String) {
-    def toPost[A](implicit request: AuthenticatedRequest[A, String]): Post = {
-      Post(title = title, content = content, published = DateTime.now, author = request.user)
     }
   }
 
