@@ -37,6 +37,11 @@ class BlogSpec extends Specification with Mockito with Security {
         status(addPostResponse) must equalTo(UNAUTHORIZED)
       }
 
+
+      "add a blog post" in new WithApplication {
+        val addPostResponse = Blog.addPost()(fakePostRequest())
+        status(addPostResponse) must equalTo(OK)
+      }
     }
   }
 }
