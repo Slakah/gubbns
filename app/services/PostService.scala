@@ -27,7 +27,7 @@ trait PostsComponent extends PostServiceComponent {
 
     def getAll: Future[List[Post]] = postRepository.getAll
 
-    def add(post: Post): Future[Unit] = ???
+    def add(post: Post): Future[Unit] = postRepository.add(post)
   }
 }
 

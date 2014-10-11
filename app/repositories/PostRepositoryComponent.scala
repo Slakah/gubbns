@@ -13,6 +13,8 @@ trait PostRepository {
   def findByTitle(name: String): Future[Option[Post]]
 
   def getAll: Future[List[Post]]
+
+  def add(post: Post): Future[Unit]
 }
 
 trait PostRepositoryComponent {
@@ -42,5 +44,8 @@ trait CouchPostRepositoryComponent extends PostRepositoryComponent {
       postDesign.view("all").map {
         response => response.json.as[View].rows.map(postRow => postRow.value.as[Post])
       }
+
+    def add(post: Post): Future[Unit] = ???
+
   }
 }
