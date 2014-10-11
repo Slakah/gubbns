@@ -29,7 +29,7 @@ trait AuthImpl extends Controller with UserRepositoryComponent {
   }
 
   def unauthorisedLogin = { implicit request: RequestHeader =>
-    Unauthorized(views.html.user.login(loginForm)(getToken(request)))
+    Unauthorized(views.html.user.login(loginForm))
   }
 
   val isoFormat = ISODateTimeFormat.dateTime

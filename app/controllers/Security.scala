@@ -6,10 +6,10 @@ import play.api.mvc._
 
 trait Security extends Status {
 
-  def email(request: RequestHeader) = request.session.get("email")
+  private def email(request: RequestHeader) = request.session.get("email")
 
   object Authenticated
-    extends AuthenticatedBuilder[String](request => email(request), request => Auth.unauthorisedLogin(request))
+    extends AuthenticatedBuilder[String](email, Auth.unauthorisedLogin)
 
 }
 
