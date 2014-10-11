@@ -1,10 +1,13 @@
 package controllers
 
+import akka.dispatch.Futures
+import org.joda.time.DateTime
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.{Controller, Action}
+import play.api.mvc.Security.AuthenticatedRequest
+import play.api.mvc.{RequestHeader, Controller, Action}
 import play.api.libs.concurrent.Execution.Implicits._
-import models.DisplayPost
+import models.{Post, DisplayPost}
 import services.{MarkdownServiceComponent, PostServiceComponent}
 import scala.concurrent.Future
 
@@ -28,7 +31,11 @@ trait BlogImpl extends Controller with Security
     }
   }
 
-  case class PostForm(title: String, content: String)
+  case class PostForm(title: String, content: String) {
+    def toPost[A](implicit request: AuthenticatedRequest[A, String]): Post = {
+      Post(title = title, content = content, published = DateTime.now, author = request.user)
+    }
+  }
 
   val postForm = Form(
     mapping(
@@ -36,8 +43,13 @@ trait BlogImpl extends Controller with Security
       "content" -> text(minLength = 20)
     )(PostForm.apply)(PostForm.unapply))
 
-  def addPost() = Authenticated { implicit request =>
-    Ok
-  }
 
+  def addPost() = Authenticated.async { implicit request =>
+    postForm.bindFromRequest.fold(
+      formWithErrors => Futures.successful(BadRequest),
+      validPostForm => {
+        posts.add(validPostForm.toPost).map {_ => Created}
+      }
+    )
+  }
 }
