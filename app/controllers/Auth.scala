@@ -16,7 +16,8 @@ import scala.concurrent.Future
 
 object Auth extends AuthImpl with Application
 
-trait AuthImpl extends Controller with UserRepositoryComponent {
+trait AuthImpl extends Controller
+    with UserRepositoryComponent with Security {
   val loginForm = Form(
     mapping(
       "email" -> email,
@@ -40,10 +41,8 @@ trait AuthImpl extends Controller with UserRepositoryComponent {
         Futures.successful(Unauthorized(views.html.user.login(formWithErrors))),
       validForm => {
         isValidLogin(validForm).map {
-          case true => Redirect(routes.Home.index.url, ACCEPTED).withSession(
-            "email" -> validForm.email,
-            "login-time" -> isoFormat.print(DateTime.now)
-          )
+          case true => Redirect(routes.Home.index.url, ACCEPTED)
+            .withSession(loginSession(validForm.email))
           case false =>
             val badForm = loginForm.fill(validForm).withGlobalError("Incorrect email or password")
             Unauthorized(views.html.user.login(badForm))

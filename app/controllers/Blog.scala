@@ -1,6 +1,7 @@
 package controllers
 
-import play.api.Logger
+import play.api.data.Form
+import play.api.data.Forms._
 import play.api.mvc.{Controller, Action}
 import play.api.libs.concurrent.Execution.Implicits._
 import models.DisplayPost
@@ -26,6 +27,14 @@ trait BlogImpl extends Controller with Security
       case None => Future.successful(NotFound)
     }
   }
+
+  case class PostForm(title: String, content: String)
+
+  val postForm = Form(
+    mapping(
+      "title" -> text(minLength = 3),
+      "content" -> text(minLength = 20)
+    )(PostForm.apply)(PostForm.unapply))
 
   def addPost() = Authenticated { implicit request =>
     Ok
