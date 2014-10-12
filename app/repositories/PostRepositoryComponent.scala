@@ -4,6 +4,7 @@ import db.ViewQuery
 import db.models.View
 import db.models.ViewFormat.viewFormats
 import models.Post
+import play.api.Logger
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsString, Json}
 
@@ -18,7 +19,7 @@ trait PostRepository {
 }
 
 trait PostRepositoryComponent {
-  val postRepository: PostRepository
+  def postRepository: PostRepository
 }
 
 import models.PostFormat.postFormats
@@ -29,7 +30,6 @@ trait CouchPostRepositoryComponent extends PostRepositoryComponent {
   val postRepository: PostRepository = CouchPostRepository
 
   object CouchPostRepository extends PostRepository {
-    private val db = blogService.blogDb
     private val postDesign = blogService.postDesign
 
     override def findByTitle(rawTitle: String): Future[Option[Post]] = {
@@ -45,7 +45,9 @@ trait CouchPostRepositoryComponent extends PostRepositoryComponent {
         response => response.json.as[View].rows.map(postRow => postRow.value.as[Post])
       }
 
-    def add(post: Post): Future[Unit] = ???
-
+    def add(post: Post): Future[Unit] = {
+      Logger.info(blogService.blogDb.toString)
+      blogService.blogDb.addDoc(Json.prettyPrint(Json.toJson(post)))
+    }
   }
 }

@@ -14,6 +14,8 @@ case class RequestHolder(webService: WebService, url: String) {
 
   def put(): Future[WSResponse] = webService.put(url)
 
+  def post(body: String): Future[WSResponse] = webService.post(url, body)
+
   def get(): Future[WSResponse] = webService.get(url)
 
   def delete(): Future[WSResponse] = webService.delete(url)
