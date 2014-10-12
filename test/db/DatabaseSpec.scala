@@ -39,18 +39,20 @@ class DatabaseSpec extends Specification with Mockito {
 
     "create a document" in {
       val testJson = """{"foo": "bar}"""
-      val couchResponse = """{
+      val couchResponse = Json.toJson("""{
                             |    "id": "ab39fe0993049b84cfa81acd6ebad09d",
                             |    "ok": true,
                             |    "rev": "1-9c65296036141e575d32ba9c034dd3ee"
-                            |}"""
+                            |}""")
 
       val mockRequestHolder = mock[RequestHolder]
-      mockRequestHolder.post(testJson) returns Mocks.validFutureResponse(Json.toJson(couchResponse))
+      val validCouchResponse = Mocks.validFutureResponse(couchResponse)
+      mockRequestHolder.post(testJson) returns validCouchResponse
 
       val testDatabase = Database(mockRequestHolder)
-      testDatabase.addDoc(testJson)
+      val addResponse = testDatabase.addDoc(testJson)
       there was one(mockRequestHolder).post(testJson)
+      addResponse must be(validCouchResponse)
 
     }
 

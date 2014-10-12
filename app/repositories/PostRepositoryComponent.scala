@@ -4,7 +4,6 @@ import db.ViewQuery
 import db.models.View
 import db.models.ViewFormat.viewFormats
 import models.Post
-import play.api.Logger
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{JsString, Json}
 
@@ -46,8 +45,7 @@ trait CouchPostRepositoryComponent extends PostRepositoryComponent {
       }
 
     def add(post: Post): Future[Unit] = {
-      Logger.info(blogService.blogDb.toString)
-      blogService.blogDb.addDoc(Json.prettyPrint(Json.toJson(post)))
+      blogService.blogDb.addDoc(Json.prettyPrint(Json.toJson(post))).map { response => () }
     }
   }
 }

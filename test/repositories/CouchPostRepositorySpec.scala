@@ -1,6 +1,6 @@
 package repositories
 
-import db.Database
+import db.{Mocks, Database}
 import models.Post
 import org.joda.time.DateTime
 import org.specs2.mock.Mockito
@@ -29,7 +29,7 @@ class CouchPostRepositorySpec extends Specification with Mockito {
         author = "Joe Bloggs"
       )
       val testPostJson = Json.prettyPrint(Json.toJson(testPost))
-      mockBlogDb.addDoc(testPostJson) returns mock[Future[Unit]]
+      mockBlogDb.addDoc(testPostJson) returns Mocks.validFutureResponse
       val testPostRepository = TestCouchPostRepositoryComponent.postRepository
       testPostRepository.add(testPost)
       there was one(mockBlogDb).addDoc(testPostJson)
