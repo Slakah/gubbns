@@ -39,7 +39,9 @@ trait BlogImpl extends Controller with Security
     postForm.bindFromRequest.fold(
       formWithErrors => Futures.successful(BadRequest),
       validPostForm => {
-        posts.add(validPostForm.toPost).map {_ => Created}
+        posts.add(validPostForm.toPost).map {_ =>
+          Redirect(routes.Blog.index.url, CREATED)
+        }
       }
     )
   }

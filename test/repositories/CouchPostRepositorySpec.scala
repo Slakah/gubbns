@@ -5,10 +5,8 @@ import models.Post
 import org.joda.time.DateTime
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
-import play.api.libs.json.Json
+import play.api.libs.json.{JsString, JsObject, Json}
 import models.PostFormat.postFormats
-
-import scala.concurrent.Future
 
 class CouchPostRepositorySpec extends Specification with Mockito {
 
@@ -28,7 +26,9 @@ class CouchPostRepositorySpec extends Specification with Mockito {
         published = DateTime.now,
         author = "Joe Bloggs"
       )
-      val testPostJson = Json.prettyPrint(Json.toJson(testPost))
+      val postJson = Json.toJson(testPost).as[JsObject]
+      val postJsonWithField = postJson + ("typeId" -> JsString("post"))
+      val testPostJson = Json.prettyPrint(postJsonWithField)
       mockBlogDb.addDoc(testPostJson) returns Mocks.validFutureResponse
       val testPostRepository = TestCouchPostRepositoryComponent.postRepository
       testPostRepository.add(testPost)

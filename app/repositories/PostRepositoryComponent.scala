@@ -5,7 +5,7 @@ import db.models.View
 import db.models.ViewFormat.viewFormats
 import models.Post
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.{JsValue, JsObject, JsString, Json}
 
 import scala.concurrent.Future
 
@@ -44,8 +44,13 @@ trait CouchPostRepositoryComponent extends PostRepositoryComponent {
         response => response.json.as[View].rows.map(postRow => postRow.value.as[Post])
       }
 
+    private def addPostTypeIdField(postJson: JsValue) = {
+      postJson.as[JsObject] + ("typeId" -> JsString("post"))
+    }
+
     def add(post: Post): Future[Unit] = {
-      blogService.blogDb.addDoc(Json.prettyPrint(Json.toJson(post))).map { response => () }
+      val postJson = addPostTypeIdField(Json.toJson(post))
+      blogService.blogDb.addDoc(Json.prettyPrint(postJson)).map { response => () }
     }
   }
 }

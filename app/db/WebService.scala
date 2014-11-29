@@ -20,15 +20,21 @@ trait WebService {
 
 
 trait WSWebService extends WebService {
+  val writeJsonHeader = ("Content-Type", "application/json")
+  val readJsonHeaders = ("Accept", "application/json")
 
-  override def put(url: String, body: String): Future[WSResponse] = WS.url(url).put(body)
+  override def put(url: String, body: String): Future[WSResponse] =
+    WS.url(url).withHeaders(writeJsonHeader, readJsonHeaders).put(body)
 
-  override def put(url: String): Future[WSResponse] = WS.url(url).put("")
+  override def put(url: String): Future[WSResponse] =
+    WS.url(url).withHeaders(writeJsonHeader, readJsonHeaders).put("")
 
-  override def get(url: String): Future[WSResponse] = WS.url(url).get()
+  override def get(url: String): Future[WSResponse] =
+    WS.url(url).withHeaders(writeJsonHeader).get()
 
-  override def post(url: String, body: String): Future[WSResponse] = WS.url(url).post(body)
+  override def post(url: String, body: String): Future[WSResponse] =
+    WS.url(url).withHeaders(writeJsonHeader, readJsonHeaders).post(body)
 
-  override def delete(url: String): Future[WSResponse] = WS.url(url).delete()
-
+  override def delete(url: String): Future[WSResponse] =
+    WS.url(url).withHeaders(writeJsonHeader).delete()
 }

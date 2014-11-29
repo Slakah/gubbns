@@ -50,10 +50,8 @@ class DatabaseSpec extends Specification with Mockito {
       mockRequestHolder.post(testJson) returns validCouchResponse
 
       val testDatabase = Database(mockRequestHolder)
-      val addResponse = testDatabase.addDoc(testJson)
+      testDatabase.addDoc(testJson)
       there was one(mockRequestHolder).post(testJson)
-      addResponse must be(validCouchResponse)
-
     }
 
   }

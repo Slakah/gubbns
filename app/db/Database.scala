@@ -20,5 +20,5 @@ case class Database(dbRequest: RequestHolder) {
 
   def databaseDesign(designId: String) = DesignDocument(dbRequest.append("_design").append(designId))
 
-  def addDoc(json: String): Future[WSResponse] = dbRequest.post(json)
+  def addDoc(json: String): Future[WSResponse] = dbRequest.post(json).validate
 }
