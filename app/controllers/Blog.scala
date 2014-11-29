@@ -35,7 +35,6 @@ trait BlogImpl extends Controller with Security
       "content" -> text(minLength = 20)
     )(PostForm.apply)(PostForm.unapply))
 
-
   def addPost() = Authenticated.async { implicit request =>
     postForm.bindFromRequest.fold(
       formWithErrors => Futures.successful(BadRequest),
@@ -44,4 +43,9 @@ trait BlogImpl extends Controller with Security
       }
     )
   }
+
+  def addPostForm() = Action { implicit request =>
+    Ok(views.html.blog.add(postForm))
+  }
+
 }

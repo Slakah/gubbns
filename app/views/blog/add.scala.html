@@ -1,0 +1,10 @@
+@(postForm: Form[PostForm])(implicit token: play.filters.csrf.CSRF.Token)
+
+@import helper._
+
+@form(action = routes.Blog.addPost()) {
+  @inputText(postForm("title"))
+  @textarea(postForm("content"))
+  @CSRF.formField
+  <button>add post</button>
+}

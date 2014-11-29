@@ -1,5 +1,7 @@
 package db
 
+import play.Logger
+
 import scala.concurrent.Future
 import play.api.libs.ws.WSResponse
 
