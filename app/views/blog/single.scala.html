@@ -6,6 +6,6 @@
 @main(post.title) {
     @blog_post(post)
 
-    @(prevPost.map{blogLink _})
-    @(nextPost.map{blogLink _})
+    @(prevPost.map{blogLink})
+    @(nextPost.map{blogLink})
 }
