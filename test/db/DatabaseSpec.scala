@@ -2,6 +2,7 @@ package db
 
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
+import play.api.libs.json.Json
 
 
 class DatabaseSpec extends Specification with Mockito {
@@ -34,6 +35,23 @@ class DatabaseSpec extends Specification with Mockito {
       there was one(mockRequestHolder).append("_design")
       there was one(mockRequestHolder).append(designId)
       testDesign must equalTo(DesignDocument(mockRequestHolder))
+    }
+
+    "create a document" in {
+      val testJson = """{"foo": "bar}"""
+      val couchResponse = Json.toJson("""{
+                            |    "id": "ab39fe0993049b84cfa81acd6ebad09d",
+                            |    "ok": true,
+                            |    "rev": "1-9c65296036141e575d32ba9c034dd3ee"
+                            |}""")
+
+      val mockRequestHolder = mock[RequestHolder]
+      val validCouchResponse = Mocks.validFutureResponse(couchResponse)
+      mockRequestHolder.post(testJson) returns validCouchResponse
+
+      val testDatabase = Database(mockRequestHolder)
+      testDatabase.addDoc(testJson)
+      there was one(mockRequestHolder).post(testJson)
     }
 
   }

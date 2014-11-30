@@ -4,7 +4,7 @@ import akka.dispatch.Futures
 import models.LoginForm
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
-import play.api.mvc.{Controller, Action}
+import play.api.mvc.{RequestHeader, Controller, Action}
 import play.api.data._
 import play.api.data.Forms._
 import com.github.t3hnar.bcrypt._
@@ -16,7 +16,8 @@ import scala.concurrent.Future
 
 object Auth extends AuthImpl with Application
 
-trait AuthImpl extends Controller with UserRepositoryComponent {
+trait AuthImpl extends Controller
+    with UserRepositoryComponent with Security {
   val loginForm = Form(
     mapping(
       "email" -> email,
@@ -28,6 +29,10 @@ trait AuthImpl extends Controller with UserRepositoryComponent {
     Ok(views.html.user.login(loginForm))
   }
 
+  def unauthorisedLogin = { implicit request: RequestHeader =>
+    Unauthorized(views.html.user.login(loginForm))
+  }
+
   val isoFormat = ISODateTimeFormat.dateTime
 
   def loginPost() = Action.async { implicit request =>
@@ -36,10 +41,8 @@ trait AuthImpl extends Controller with UserRepositoryComponent {
         Futures.successful(Unauthorized(views.html.user.login(formWithErrors))),
       validForm => {
         isValidLogin(validForm).map {
-          case true => Redirect(routes.Home.index.url, ACCEPTED).withSession(
-            "email" -> validForm.email,
-            "login-time" -> isoFormat.print(DateTime.now)
-          )
+          case true => Redirect(routes.Home.index.url, ACCEPTED)
+            .withSession(loginSession(validForm.email))
           case false =>
             val badForm = loginForm.fill(validForm).withGlobalError("Incorrect email or password")
             Unauthorized(views.html.user.login(badForm))

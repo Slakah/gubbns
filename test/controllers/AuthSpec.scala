@@ -32,7 +32,7 @@ class AuthSpec extends Specification with Mockito {
   singleUserRepository.fetchByEmail(email) returns futureUser
 
   object SingleAuth extends AuthImpl {
-    override def userRepository: UserRepository = singleUserRepository
+    override val userRepository: UserRepository = singleUserRepository
   }
 
   "Auth login" should {

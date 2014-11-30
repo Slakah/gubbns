@@ -1,18 +1,23 @@
 package controllers
 
+import org.joda.time.DateTime
+import org.joda.time.format.ISODateTimeFormat
 import play.api.http.Status
+import play.api.mvc.Security.AuthenticatedBuilder
 import play.api.mvc._
 
 trait Security extends Status {
+  private val isoFormat = ISODateTimeFormat.dateTime
 
-  def email(request: RequestHeader) = request.session.get("email")
+  def loginSession(email: String) = Session(
+    Map("email" -> email,
+        "login-time" -> isoFormat.print(DateTime.now))
+  )
 
-  def onUnauthorized(request: RequestHeader) =
-    Results.Redirect(routes.Auth.login.url, UNAUTHORIZED)
+  private def email(request: RequestHeader) = request.session.get("email")
 
-  def withAuth(f: => String => Request[AnyContent] => Result) = {
-    Security.Authenticated(email, onUnauthorized) { user =>
-      Action(request => f(user)(request))
-    }
-  }
+  object Authenticated
+    extends AuthenticatedBuilder[String](email, Auth.unauthorisedLogin)
+
 }
+

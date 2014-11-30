@@ -9,6 +9,8 @@ trait PostService {
   def findByTitle(name: String): Future[Option[Post]]
 
   def getAll: Future[List[Post]]
+
+  def add(post: Post): Future[Unit]
 }
 
 trait PostServiceComponent {
@@ -24,6 +26,8 @@ trait PostsComponent extends PostServiceComponent {
     def findByTitle(name: String): Future[Option[Post]] = postRepository.findByTitle(name)
 
     def getAll: Future[List[Post]] = postRepository.getAll
+
+    def add(post: Post): Future[Unit] = postRepository.add(post)
   }
 }
 

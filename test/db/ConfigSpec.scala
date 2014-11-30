@@ -21,7 +21,8 @@ class ConfigSpec extends Specification with PlayConfigService {
     "use configuration host of 'http://gubbns.com'" in {
       val host = "http://gubbns.com"
       running(FakeApplication(additionalConfiguration =
-        Map("couchdb.default.host" -> host))) {
+        Map("couchdb.default.host" -> host),
+        withoutPlugins = Seq("plugins.BlogCouchSyncPlugin"))) {
         config().host must equalTo(host)
       }
     }
@@ -35,7 +36,8 @@ class ConfigSpec extends Specification with PlayConfigService {
     "use configuration port 24" in {
       val port = 24
       running(FakeApplication(additionalConfiguration =
-        Map("couchdb.default.port" -> port))) {
+        Map("couchdb.default.port" -> port),
+        withoutPlugins = Seq("plugins.BlogCouchSyncPlugin"))) {
         config().port must equalTo(port)
       }
     }

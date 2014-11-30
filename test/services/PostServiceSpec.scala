@@ -26,5 +26,13 @@ class PostServiceSpec extends Specification with Mockito
       postRepository.getAll returns mockPosts
       posts.getAll must equalTo(mockPosts)
     }
+
+    "add a post" in {
+      val mockPost = mock[Post]
+      val addPostSuccess = Future.successful {}
+
+      postRepository.add(mockPost) returns addPostSuccess
+      posts.add(mockPost) must equalTo(addPostSuccess)
+    }
   }
 }

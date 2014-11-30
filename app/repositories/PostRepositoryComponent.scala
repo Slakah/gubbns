@@ -5,7 +5,7 @@ import db.models.View
 import db.models.ViewFormat.viewFormats
 import models.Post
 import play.api.libs.concurrent.Execution.Implicits._
-import play.api.libs.json.{JsString, Json}
+import play.api.libs.json.{JsValue, JsObject, JsString, Json}
 
 import scala.concurrent.Future
 
@@ -13,10 +13,12 @@ trait PostRepository {
   def findByTitle(name: String): Future[Option[Post]]
 
   def getAll: Future[List[Post]]
+
+  def add(post: Post): Future[Unit]
 }
 
 trait PostRepositoryComponent {
-  val postRepository: PostRepository
+  def postRepository: PostRepository
 }
 
 import models.PostFormat.postFormats
@@ -27,7 +29,6 @@ trait CouchPostRepositoryComponent extends PostRepositoryComponent {
   val postRepository: PostRepository = CouchPostRepository
 
   object CouchPostRepository extends PostRepository {
-    private val db = blogService.blogDb
     private val postDesign = blogService.postDesign
 
     override def findByTitle(rawTitle: String): Future[Option[Post]] = {
@@ -42,5 +43,14 @@ trait CouchPostRepositoryComponent extends PostRepositoryComponent {
       postDesign.view("all").map {
         response => response.json.as[View].rows.map(postRow => postRow.value.as[Post])
       }
+
+    private def addPostTypeIdField(postJson: JsValue) = {
+      postJson.as[JsObject] + ("typeId" -> JsString("post"))
+    }
+
+    def add(post: Post): Future[Unit] = {
+      val postJson = addPostTypeIdField(Json.toJson(post))
+      blogService.blogDb.addDoc(Json.prettyPrint(postJson)).map { response => () }
+    }
   }
 }

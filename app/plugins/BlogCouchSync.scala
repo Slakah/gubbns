@@ -15,14 +15,14 @@ import scala.concurrent.duration._
 
 object BlogStructure {
 
-  val postDesign = Design(id = "post",
+  val postDesign = Design(id = "_design/post",
     views = Set(
       ViewFunction(name = "all", map = Some("function(doc) {if (doc.typeId===\"post\") {emit(doc.published, doc);}}")),
       ViewFunction(name = "by_title", map = Some("function(doc) {if (doc.typeId===\"post\") {emit(decodeURIComponent(doc.title.toLowerCase().replace(/\\s+/g, \"-\")), doc);}}"))
     )
   )
 
-  val userDesign = Design(id = "user",
+  val userDesign = Design(id = "_design/user",
     views = Set(
       ViewFunction(name = "by_email", map = Some("function(doc) {if (doc.typeId===\"user\") {emit(doc.email, doc);}}"))
     )
