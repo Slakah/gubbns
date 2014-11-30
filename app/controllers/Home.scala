@@ -11,11 +11,9 @@ object Home extends HomeImpl with Application
 trait HomeImpl extends Controller
     with PostServiceComponent with MarkdownServiceComponent  {
   def index = Action.async {
-    posts.getAll.flatMap{allPosts =>
-      Future.sequence(allPosts.map(DisplayPost(_)(markdown))).map {
-        displayPosts =>
-          Ok(views.html.home.render(displayPosts))
-      }
+    posts.getAll.map { allPosts =>
+      val allDisplayPosts = allPosts.map(DisplayPost(_)(markdown))
+      Ok(views.html.home.render(allDisplayPosts))
     }
   }
 }
