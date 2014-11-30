@@ -32,6 +32,8 @@ class CouchSync(couch: Couch) {
   }
 
   private def createDesigns(database: Database, designs: Set[DesignStructure]): Future[Set[Unit]] = {
-    Future.traverse(designs){design => database.databaseDesign(design.name).createIfNoneExist(design.json)}
+    Future.traverse(designs){design => database.databaseDesign(design.name).createOrUpdate(design.json).map{ _ =>
+      ()
+    }}
   }
 }

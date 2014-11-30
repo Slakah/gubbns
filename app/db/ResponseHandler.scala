@@ -17,10 +17,20 @@ object ResponseHandler {
     }
   }
 
+  def doesDocExist(response: WSResponse): Try[Boolean] = response.status match {
+    case 404 => Success(false)
+    case 200 => Success(true)
+    case errorStatus => Failure(CouchException(response))
+  }
+
   implicit class FutureResponseWithValidate(futureResponse: Future[WSResponse]) {
 
     def validate: Future[WSResponse] = futureResponse.flatMap {response =>
       Future.fromTry(ResponseHandler.validate(response))
+    }
+
+    def doesDocExist: Future[Boolean] = futureResponse.flatMap {response =>
+      Future.fromTry(ResponseHandler.doesDocExist(response))
     }
   }
 
