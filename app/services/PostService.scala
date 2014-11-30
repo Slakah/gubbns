@@ -1,8 +1,8 @@
 package services
 
-import models.Post
+import models.{DisplayPost, Post}
 import repositories.PostRepositoryComponent
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait PostService {
@@ -18,11 +18,15 @@ trait PostServiceComponent {
 }
 
 trait PostsComponent extends PostServiceComponent {
-  this: PostRepositoryComponent =>
+  this: PostRepositoryComponent with MarkdownServiceComponent =>
 
   override val posts = Posts
 
   object Posts extends PostService {
+    def findByTitleDisplay(name: String): Future[Option[DisplayPost]] = {
+      findByTitle(name).map { post => post.map(DisplayPost(_)(markdown)) }
+    }
+
     def findByTitle(name: String): Future[Option[Post]] = postRepository.findByTitle(name)
 
     def getAll: Future[List[Post]] = postRepository.getAll
