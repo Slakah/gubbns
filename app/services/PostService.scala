@@ -31,6 +31,10 @@ trait PostsComponent extends PostServiceComponent {
 
     def getAll: Future[List[Post]] = postRepository.getAll
 
+    def getAllDisplay: Future[List[DisplayPost]] = {
+      getAll.map { post => post.map(DisplayPost(_)(markdown))}
+    }
+
     def add(post: Post): Future[Unit] = postRepository.add(post)
   }
 }

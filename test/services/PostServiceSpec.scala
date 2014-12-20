@@ -23,19 +23,24 @@ class PostServiceSpec extends Specification with Mockito
     override val markdown = mockMarkdown
   }
 
+
   val postService = TestPostServiceComponent.posts
+  val testPost = Post("Title", "content", DateTime.now, "James")
+
 
   "PostService" should {
-    "find post with title 'First!' and process the markdown body" in {
-      val post = Post("Title", "content", DateTime.now, "James")
-      val response = Future { Some(post) }
+    "find post with title 'First!' and process the markdown content" in {
+
+      val response = Future { Some(testPost) }
+
       val mockMarkdownContent = mock[Html]
-      mockMarkdown.apply(post.content) returns mockMarkdownContent
+      mockMarkdown.apply(testPost.content) returns mockMarkdownContent
+      val expectedDisplayPost = DisplayPost(testPost)(mockMarkdown)
 
       postRepository.findByTitle("First!") returns response
-      val expectedDisplayPost = DisplayPost(post)(mockMarkdown)
       postService.findByTitleDisplay("First!") must beSome(expectedDisplayPost).await
     }
+
     "find post with title 'First!'" in {
       val mockPost = mock[Future[Option[Post]]]
 
@@ -48,6 +53,19 @@ class PostServiceSpec extends Specification with Mockito
 
       postRepository.getAll returns mockPosts
       posts.getAll must equalTo(mockPosts)
+    }
+
+    "get all posts and process the markdown content" in {
+      val mockPosts = Future {
+        List(testPost)
+      }
+
+      val mockMarkdownContent = mock[Html]
+      mockMarkdown.apply(testPost.content) returns mockMarkdownContent
+      val expectedDisplayPost = DisplayPost(testPost)(mockMarkdown)
+
+      postRepository.getAll returns mockPosts
+      posts.getAllDisplay must contain(expectedDisplayPost).await
     }
 
     "add a post" in {
