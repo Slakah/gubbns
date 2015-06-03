@@ -1,6 +1,6 @@
 name := """gubbns"""
 
-version := "1.0-SNAPSHOT"
+version := "1.0.0"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
@@ -19,3 +19,26 @@ libraryDependencies ++= Seq(
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
 LessKeys.compress in Assets := true
+
+// rpm packaging
+
+enablePlugins(JavaServerAppPackaging)
+
+{
+  import com.typesafe.sbt.packager.archetypes.ServerLoader.Systemd
+  serverLoading in Rpm := Systemd
+}
+
+maintainer in Linux := "James Collier"
+
+packageSummary in Linux := "Simple hobby blogging website"
+
+packageDescription := "Simple hobby blogging website"
+
+rpmVendor := "gubbns"
+
+rpmGroup := Some("Applications/System")
+
+rpmLicense := Some("ASL 2.0")
+
+rpmBrpJavaRepackJars := true
