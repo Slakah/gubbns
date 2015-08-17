@@ -21,11 +21,11 @@ class AuthSpec extends Specification with Mockito {
 
   private def fakeLoginRequest(email: String = email,
                                password:String = password) = {
-    FakeRequest(POST, routes.Auth.login.url)
+    FakeRequest(POST, routes.Auth.login().url)
       .withFormUrlEncodedBody(
         ("email", email),
         ("password", password))
-      .withSession((CSRF.TokenName, CSRF.SignedTokenProvider.generateToken))
+      .withSession((CSRF.Token.RequestTag, CSRF.SignedTokenProvider.generateToken))
   }
 
   val singleUserRepository = mock[UserRepository]

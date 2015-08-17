@@ -4,7 +4,7 @@ import org.specs2.mutable._
 import db.DatabaseName.StringWithToDatabaseName
 import org.specs2.mock.Mockito
 import play.api.libs.ws.WSResponse
-
+import org.specs2.concurrent.ExecutionEnv
 import scala.concurrent.Future
 
 class CouchSpec extends Specification with Mockito {
@@ -26,10 +26,10 @@ class CouchSpec extends Specification with Mockito {
 
     val couch = new Couch with MockWebService with MockConfigService
 
-    "create a database" in {
+    "create a database" in { implicit ee: ExecutionEnv =>
       mockWebService.put(s"http://localhost:5984/$databaseName") returns Mocks.validFutureResponse
       val databaseResponse: Future[WSResponse] = couch.createDatabase(databaseName.asDatabaseName)
-      databaseResponse should be(Mocks.validResponse).await
+      databaseResponse must be(Mocks.validResponse).await
 
       there was one(mockWebService).put(s"http://localhost:5984/$databaseName")
     }
