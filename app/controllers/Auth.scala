@@ -1,16 +1,17 @@
 package controllers
 
+import play.api.Play.current
 import akka.dispatch.Futures
-import models.LoginForm
-import org.joda.time.DateTime
-import org.joda.time.format.ISODateTimeFormat
-import play.api.mvc.{RequestHeader, Controller, Action}
-import play.api.data._
-import play.api.data.Forms._
 import com.github.t3hnar.bcrypt._
+import models.LoginForm
+import org.joda.time.format.ISODateTimeFormat
+import play.api.data.Forms._
+import play.api.data._
 import play.api.libs.concurrent.Execution.Implicits._
-import repositories.UserRepositoryComponent
+import play.api.mvc.{Action, Controller, RequestHeader}
 import play.filters.csrf.CSRF.Token.getToken
+import repositories.UserRepositoryComponent
+import play.api.i18n.Messages.Implicits._
 
 import scala.concurrent.Future
 
