@@ -35,7 +35,7 @@ class BlogSpec extends Specification with Mockito with Security {
           .withFormUrlEncodedBody(
             ("title", title),
             ("content", content))
-          .withSession((CSRF.Token.RequestTag, CSRF.SignedTokenProvider.generateToken))
+          .withSession(("csrfToken", CSRF.SignedTokenProvider.generateToken))
       }
 
       def fakePostRequest(title: String = title, content: String = content) = {
