@@ -6,4 +6,6 @@ scala:
    - 2.11.7
 services:
   - couchdb
+
+before_install: unset SBT_OPTS JVM_OPTS
 script: ./activator test
