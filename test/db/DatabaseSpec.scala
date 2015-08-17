@@ -3,12 +3,12 @@ package db
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import play.api.libs.json.Json
-
+import org.specs2.concurrent.ExecutionEnv
 
 class DatabaseSpec extends Specification with Mockito {
   "Database" should {
 
-    "get a document" in {
+    "get a document" in { implicit ee: ExecutionEnv =>
       val docId = "doc_id"
       val docBody = "doc_body"
 

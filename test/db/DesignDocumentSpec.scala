@@ -1,11 +1,12 @@
 package db
 
+import org.specs2.concurrent.ExecutionEnv
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 
 class DesignDocumentSpec extends Specification with Mockito {
   "DesignDocument" should {
-    "create a design document" in {
+    "create a design document" in { implicit ee: ExecutionEnv =>
       val designJson = "{designJson}"
 
       val mockRequestHolder = mock[RequestHolder]
@@ -18,7 +19,7 @@ class DesignDocumentSpec extends Specification with Mockito {
       designResponse must be(Mocks.validResponse).await
     }
 
-    "execute a view" in {
+    "execute a view" in { implicit ee: ExecutionEnv =>
 
       val viewId = "test_view"
 

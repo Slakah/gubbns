@@ -3,6 +3,7 @@ package repositories
 import db.{ViewQuery, DesignDocument}
 import db.models.{View, ViewRow}
 import models.User
+import org.specs2.concurrent.ExecutionEnv
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import play.api.libs.json.{JsString, Json}
@@ -21,7 +22,7 @@ class CouchUserRepositorySpec extends Specification with Mockito {
   val userRepository = TestCouchUserRepository.userRepository
 
   "CouchServiceComponent" should {
-    "fetch user joe@gmail.com" in {
+    "fetch user joe@gmail.com" in { implicit ee: ExecutionEnv =>
       val email = "joe@gmail.com"
 
       val user = User(email, "$2a$10$iXIfki6AefgcUsPqR.niQ.FvIK8vdcfup09YmUxmzS/sQeuI3QOFG")
