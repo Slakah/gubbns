@@ -1,4 +1,4 @@
-@(postForm: Form[PostForm])(implicit token: play.filters.csrf.CSRF.Token)
+@(postForm: Form[PostForm])(implicit messages: play.api.i18n.Messages, token: play.filters.csrf.CSRF.Token)
 
 @import helper._
 
