@@ -2,6 +2,7 @@ package services
 
 import models.{DisplayPost, Post}
 import org.joda.time.DateTime
+import org.specs2.concurrent.ExecutionEnv
 import org.specs2.mutable.Specification
 import play.twirl.api.Html
 import repositories.{PostRepository, PostRepositoryComponent}
@@ -29,7 +30,7 @@ class PostServiceSpec extends Specification with Mockito
 
 
   "PostService" should {
-    "find post with title 'First!' and process the markdown content" in {
+    "find post with title 'First!' and process the markdown content" in { implicit ee: ExecutionEnv =>
 
       val response = Future { Some(testPost) }
 
@@ -55,7 +56,7 @@ class PostServiceSpec extends Specification with Mockito
       posts.getAll must equalTo(mockPosts)
     }
 
-    "get all posts and process the markdown content" in {
+    "get all posts and process the markdown content" in { implicit ee: ExecutionEnv =>
       val mockPosts = Future {
         List(testPost)
       }

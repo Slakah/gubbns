@@ -6,7 +6,7 @@ import org.specs2.mutable._
 import com.github.t3hnar.bcrypt._
 import play.api.test.{WithApplication, FakeRequest}
 import play.api.test.Helpers._
-import play.filters.csrf.CSRF
+import play.filters.csrf.{CSRFConfig, CSRF}
 import repositories.UserRepository
 
 import scala.concurrent.Future
@@ -21,11 +21,11 @@ class AuthSpec extends Specification with Mockito {
 
   private def fakeLoginRequest(email: String = email,
                                password:String = password) = {
-    FakeRequest(POST, routes.Auth.login.url)
+    FakeRequest(POST, routes.Auth.login().url)
       .withFormUrlEncodedBody(
         ("email", email),
         ("password", password))
-      .withSession((CSRF.TokenName, CSRF.SignedTokenProvider.generateToken))
+      .withSession(("csrfToken", CSRF.SignedTokenProvider.generateToken))
   }
 
   val singleUserRepository = mock[UserRepository]

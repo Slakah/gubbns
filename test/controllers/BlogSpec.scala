@@ -35,7 +35,7 @@ class BlogSpec extends Specification with Mockito with Security {
           .withFormUrlEncodedBody(
             ("title", title),
             ("content", content))
-          .withSession((CSRF.TokenName, CSRF.SignedTokenProvider.generateToken))
+          .withSession(("csrfToken", CSRF.SignedTokenProvider.generateToken))
       }
 
       def fakePostRequest(title: String = title, content: String = content) = {
@@ -51,7 +51,7 @@ class BlogSpec extends Specification with Mockito with Security {
       "add a blog post" in new WithApplication {
         val testPost = Post(title = title, content = content, published = DateTime.now, author = email)
 
-        mockPostsService.add(testPost) returns Future {}
+        mockPostsService.add(testPost) returns Future.successful((): Unit)
 
         val addPostResponse = TestBlog.addPost()(fakePostRequest())
         status(addPostResponse) must equalTo(CREATED)

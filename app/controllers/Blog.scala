@@ -1,5 +1,6 @@
 package controllers
 
+import play.api.Play.current
 import akka.dispatch.Futures
 import play.api.data.Form
 import play.api.data.Forms._
@@ -8,6 +9,8 @@ import play.api.libs.concurrent.Execution.Implicits._
 import models.{PostForm, DisplayPost}
 import services.{MarkdownServiceComponent, PostServiceComponent}
 import scala.concurrent.Future
+import play.api.i18n.Messages.Implicits._
+
 
 object Blog extends BlogImpl with Application
 

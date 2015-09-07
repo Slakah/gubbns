@@ -7,7 +7,6 @@ import db.models.{Design, ViewFunction}
 import db.{CouchStructure, CouchSync, DatabaseStructure, DesignStructure}
 import play.Logger
 import play.api.libs.json.Json
-import play.api.{Application, Plugin}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Await
 import scala.util.{Success, Failure}
@@ -55,8 +54,8 @@ object BlogCouchSync extends Default {
 
 }
 
-case class BlogCouchSyncPlugin(app: Application) extends Plugin {
-  override def onStart() = {
-    Await.ready(BlogCouchSync.sync(), 5.seconds)
-  }
+// TODO: Make a DI play module
+object BlogCouchSyncPlugin {
+  Await.ready(BlogCouchSync.sync(), 5.seconds)
 }
+

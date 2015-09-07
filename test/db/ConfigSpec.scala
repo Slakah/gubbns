@@ -6,7 +6,7 @@ import play.api.test.Helpers._
 import play.api.Configuration
 import plugins.BlogCouchSyncPlugin
 
-class FakeApplicationWithEmptyConfig extends FakeApplication(withoutPlugins = Seq(classOf[BlogCouchSyncPlugin].getName)) {
+class FakeApplicationWithEmptyConfig extends FakeApplication {
   override def configuration: Configuration = Configuration.empty
 }
 
