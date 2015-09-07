@@ -12,16 +12,6 @@ class CouchSpec extends Specification with Mockito {
 
     val mockWebService = mock[WebService]
 
-    trait MockWebService extends WebService {
-      override def put(url: String) = {
-        mockWebService.put(url)
-      }
-
-      override def delete(url: String) = {
-        mockWebService.delete(url)
-      }
-    }
-
     val databaseName = "test_database"
 
     val couch = new Couch(mockWebService) with MockConfigService

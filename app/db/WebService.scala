@@ -1,21 +1,20 @@
 package db
 
-import play.api.libs.ws.{WSResponse, WS}
-import scala.concurrent.Future
 import play.api.Play.current
+import play.api.libs.ws.{WS, WSResponse}
+
+import scala.concurrent.Future
 
 trait WebService {
-  this: WebService =>
+  def put(url: String, body: String): Future[WSResponse]
 
-  def put(url: String, body: String): Future[WSResponse] = this.put(url, body)
+  def put(url: String): Future[WSResponse]
 
-  def put(url: String): Future[WSResponse] = this.put(url)
+  def get(url: String): Future[WSResponse]
 
-  def get(url: String): Future[WSResponse] = this.get(url)
+  def post(url: String, body: String): Future[WSResponse]
 
-  def post(url: String, body: String): Future[WSResponse] = this.post(url, body)
-
-  def delete(url: String): Future[WSResponse] = this.delete(url)
+  def delete(url: String): Future[WSResponse]
 }
 
 
