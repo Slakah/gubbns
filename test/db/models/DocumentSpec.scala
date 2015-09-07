@@ -30,9 +30,9 @@ class DocumentSpec extends Specification {
         content = Foo("bar")
       )
       val documentJson = Json.toJson(document)
-      documentJson \ "_id" must equalTo(JsString("foo/id"))
-      documentJson \ "_rev" must equalTo(JsString("2-3f80699103e713090fe6e591e4f2edb7"))
-      documentJson \ "foo" must equalTo(JsString("bar"))
+      (documentJson \ "_id").get must equalTo(JsString("foo/id"))
+      (documentJson \ "_rev").get must equalTo(JsString("2-3f80699103e713090fe6e591e4f2edb7"))
+      (documentJson \ "foo").get must equalTo(JsString("bar"))
     }
   }
 
