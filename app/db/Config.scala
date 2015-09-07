@@ -13,13 +13,11 @@ case class Config(
 }
 
 trait ConfigService {
-  this: ConfigService =>
-
-  def config(): Config = this.config()
+  def config(): Config
 }
 
 
-trait PlayConfigService extends ConfigService {
+class PlayConfigService extends ConfigService {
   override def config() = {
     val confKey = "couchdb.default"
 
