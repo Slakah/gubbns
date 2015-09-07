@@ -24,7 +24,7 @@ class CouchSpec extends Specification with Mockito {
 
     val databaseName = "test_database"
 
-    val couch = new Couch with MockWebService with MockConfigService
+    val couch = new Couch(mockWebService) with MockConfigService
 
     "create a database" in { implicit ee: ExecutionEnv =>
       mockWebService.put(s"http://localhost:5984/$databaseName") returns Mocks.validFutureResponse
