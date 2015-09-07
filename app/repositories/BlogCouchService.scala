@@ -39,6 +39,6 @@ trait PlayCouchServiceComponent extends CouchServiceComponent {
   override val couchService = PlayCouchService
 
   object PlayCouchService extends CouchService {
-    override val couch = new Couch() with PlayConfigService with WSWebService
+    override val couch = new Couch(new WSWebService) with PlayConfigService
   }
 }

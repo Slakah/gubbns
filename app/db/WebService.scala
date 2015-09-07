@@ -19,7 +19,7 @@ trait WebService {
 }
 
 
-trait WSWebService extends WebService {
+class WSWebService extends WebService {
   val writeJsonHeader = ("Content-Type", "application/json")
   val readJsonHeaders = ("Accept", "application/json")
 

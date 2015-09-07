@@ -1,14 +1,15 @@
 package db
 
+import javax.inject.Inject
+
 import db.ResponseHandler.FutureResponseWithValidate
-import db.models.CouchError
 import play.api.libs.ws.WSResponse
 
 import scala.concurrent.Future
 
-class Couch extends ConfigService with WebService {
+class Couch @Inject() (ws: WebService) extends ConfigService {
   val couchDbUrl = s"${config().protocol}://${config().host}:${config().port}"
-  val couchBaseRequest = RequestHolder(this, couchDbUrl)
+  val couchBaseRequest = RequestHolder(ws, couchDbUrl)
 
   def database(dbName: DatabaseName): Database = new Database(couchBaseRequest.append(dbName.toString))
 
