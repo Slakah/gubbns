@@ -1,13 +1,9 @@
 #!/bin/sh
 
-sh activator clean
+#sh activator stage
 
-sh activator stage
+rsync -avz --progress target/universal/stage/ jcollier@gubbns.com:~/gubbns/
 
-cd target/universal
+echo "Starting gubbns.com remotely"
+ssh -t jcollier@gubbns.com 'sudo sh -c "cp -r gubbns/* /opt/gubbns/ && service gubbns restart"'
 
-rsync -avz --progress stage gubbns@gubbns.com:~/
-
-# TODO - Use a systemd service to do this
-echo "Starting gubbns.com remotely";
-ssh gubbns@gubbns.com "cd stage; [ -f RUNNING_PID ] && kill \$(cat RUNNING_PID); sh bin/blog -mem 250 > logs/run.log & exit;"
