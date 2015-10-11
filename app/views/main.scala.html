@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, headerEnabled: Boolean = true)(content: Html)
 
 <html>
 <head>
@@ -10,8 +10,7 @@
 
 </head>
 <body>
-@header()
-
+@if(headerEnabled) {@header()}
 <div class="container">
 @content
 </div>

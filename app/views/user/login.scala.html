@@ -1,10 +1,12 @@
 @(userForm: Form[LoginForm])(implicit messages: play.api.i18n.Messages, token: play.filters.csrf.CSRF.Token)
 
 @import helper._
+@main("Login", headerEnabled = false) {
 
-@form(action = routes.Auth.loginPost()) {
-    @inputText(userForm("email"))
-    @inputPassword(userForm("password"))
-    @CSRF.formField
-    <button>login</button>
+    @form(action = routes.Auth.loginPost()) {
+        @inputText(userForm("email"))
+        @inputPassword(userForm("password"))
+        @CSRF.formField
+        <button class="pure-button pure-button-primary">login</button>
+    }
 }
