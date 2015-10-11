@@ -6,13 +6,14 @@ After=network.target couchdb.target
 User=gubbns
 Group=gubbns
 Type=simple
+EnvironmentFile=-/etc/sysconfig/gubbns
 StandardOutput=journal
 StandardError=journal
 Restart=always
 StartLimitInterval=10
 StartLimitBurst=5
 PIDFile=/opt/gubbns/RUNNING_PID
-ExecStart=/opt/gubbns/bin/gubbns
+ExecStart=/opt/gubbns/bin/gubbns -Dplay.crypto.secret="$APPLICATION_SECRET"
 ExecStop=/bin/kill $MAINPID
 
 [Install]
