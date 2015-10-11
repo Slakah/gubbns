@@ -49,7 +49,7 @@ class Blog @Inject() (posts: PostService) extends Controller with Security {
     )
   }
 
-  def addPostForm() = Action { implicit request =>
+  def addPostForm() = Authenticated { implicit request =>
     Ok(views.html.blog.add(postForm))
   }
 
