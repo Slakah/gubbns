@@ -1,0 +1,19 @@
+[Unit]
+Description=Gubbns Play Framework
+After=network.target couchdb.target
+
+[Service]
+User=gubbns
+Group=gubbns
+Type=simple
+StandardOutput=journal
+StandardError=journal
+Restart=always
+StartLimitInterval=10
+StartLimitBurst=5
+PIDFile=/opt/gubbns/RUNNING_PID
+ExecStart=/opt/gubbns/bin/gubbns
+ExecStop=/bin/kill $MAINPID
+
+[Install]
+WantedBy=multi-user.target
