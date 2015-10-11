@@ -18,9 +18,3 @@ class PlayBlogCouchService @Inject() (couch: Couch) extends BlogCouchService {
   override lazy val postDesign = blogDb.databaseDesign("post")
   override lazy val userDesign = blogDb.databaseDesign("user")
 }
-
-trait CouchService {
-  def couch: Couch
-}
-
-class PlayCouch extends Couch(new WSWebService, new PlayConfigService)
