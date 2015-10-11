@@ -9,11 +9,11 @@ import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages.Implicits._
-import play.api.mvc.Action
+import play.api.mvc.{Controller, Action}
 import services.PostService
 import util.PegDownProcessor
 
-class Blog @Inject() (posts: PostService) extends Application with Security {
+class Blog @Inject() (posts: PostService) extends Controller with Security {
 
   lazy val markdown = new PegDownProcessor
 
