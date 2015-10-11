@@ -9,26 +9,21 @@ import db.DatabaseName._
 class BlogCouchServiceSpec extends Specification with Mockito {
   "BlogCouchService" should {
 
-    object TestCouchServiceComponent extends CouchServiceComponent with PlayBlogCouchServiceComponent {
-      override val couchService: CouchService = mock[CouchService]
-    }
-
-    val blogCouchService = TestCouchServiceComponent
-
     val mockCouch = mock[Couch]
-    blogCouchService.couchService.couch returns mockCouch
+
+    val blogCouch = new PlayBlogCouchService(mockCouch)
 
     val mockDatabase = mock[Database]
 
     "allow access to the blog database" in {
       mockCouch.database("blog".asDatabaseName) returns mockDatabase
-      blogCouchService.blogService.blogDb must beEqualTo(mockDatabase)
+      blogCouch.blogDb must beEqualTo(mockDatabase)
     }
 
     "allow access to the post design document" in {
       val mockDesignDoc = mock[DesignDocument]
       mockDatabase.databaseDesign("post") returns mockDesignDoc
-      blogCouchService.blogService.postDesign must beEqualTo(mockDesignDoc)
+      blogCouch.postDesign must beEqualTo(mockDesignDoc)
     }
   }
 

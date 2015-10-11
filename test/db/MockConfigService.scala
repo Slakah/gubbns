@@ -1,6 +1,6 @@
 package db
 
 
-trait MockConfigService extends ConfigService {
+class MockConfigService extends ConfigService {
   override def config(): Config = Config()
 }

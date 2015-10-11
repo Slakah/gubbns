@@ -3,18 +3,18 @@
 # ~~~~
 
 # Home
-GET         /                    controllers.Home.index()
+GET         /                    @controllers.Home.index()
 
 # Blog
-GET         /blog                controllers.Blog.index()
-GET         /blog/add            controllers.Blog.addPostForm()
-POST        /blog                controllers.Blog.addPost()
-GET         /blog/:title         controllers.Blog.title(title: String)
+GET         /blog                @controllers.Blog.index()
+GET         /blog/add            @controllers.Blog.addPostForm()
+POST        /blog                @controllers.Blog.addPost()
+GET         /blog/:title         @controllers.Blog.title(title: String)
 
 
 # Login
-GET         /login               controllers.Auth.login()
-POST        /login               controllers.Auth.loginPost()
+GET         /login               @controllers.Auth.login()
+POST        /login               @controllers.Auth.loginPost()
 
 # About
 GET         /about               controllers.About.index()

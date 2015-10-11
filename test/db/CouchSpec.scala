@@ -1,10 +1,11 @@
 package db
 
-import org.specs2.mutable._
 import db.DatabaseName.StringWithToDatabaseName
-import org.specs2.mock.Mockito
-import play.api.libs.ws.WSResponse
 import org.specs2.concurrent.ExecutionEnv
+import org.specs2.mock.Mockito
+import org.specs2.mutable._
+import play.api.libs.ws.WSResponse
+
 import scala.concurrent.Future
 
 class CouchSpec extends Specification with Mockito {
@@ -12,19 +13,9 @@ class CouchSpec extends Specification with Mockito {
 
     val mockWebService = mock[WebService]
 
-    trait MockWebService extends WebService {
-      override def put(url: String) = {
-        mockWebService.put(url)
-      }
-
-      override def delete(url: String) = {
-        mockWebService.delete(url)
-      }
-    }
-
     val databaseName = "test_database"
 
-    val couch = new Couch with MockWebService with MockConfigService
+    val couch = new Couch(mockWebService, new MockConfigService)
 
     "create a database" in { implicit ee: ExecutionEnv =>
       mockWebService.put(s"http://localhost:5984/$databaseName") returns Mocks.validFutureResponse

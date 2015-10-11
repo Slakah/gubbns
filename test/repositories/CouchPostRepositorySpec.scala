@@ -14,9 +14,7 @@ class CouchPostRepositorySpec extends Specification with Mockito {
   val mockBlogDb = mock[Database]
   mockBlogService.blogDb returns mockBlogDb
 
-  object TestCouchPostRepositoryComponent extends CouchPostRepositoryComponent with BlogCouchServiceComponent {
-    override def blogService: BlogCouchService = mockBlogService
-  }
+  val testPostRepo = new CouchPostRepository(mockBlogService)
 
   "CouchPostRepository" should {
     "add a post" in {
@@ -30,8 +28,7 @@ class CouchPostRepositorySpec extends Specification with Mockito {
       val postJsonWithField = postJson + ("typeId" -> JsString("post"))
       val testPostJson = Json.prettyPrint(postJsonWithField)
       mockBlogDb.addDoc(testPostJson) returns Mocks.validFutureResponse
-      val testPostRepository = TestCouchPostRepositoryComponent.postRepository
-      testPostRepository.add(testPost)
+      testPostRepo.add(testPost)
       there was one(mockBlogDb).addDoc(testPostJson)
     }
   }

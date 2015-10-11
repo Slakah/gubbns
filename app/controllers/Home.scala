@@ -1,20 +1,18 @@
 package controllers
 
-import play.api.mvc.{Controller, Action}
-import play.api.libs.concurrent.Execution.Implicits._
+import javax.inject.Inject
+
 import models.DisplayPost
-import services.{MarkdownServiceComponent, PostServiceComponent}
-import scala.concurrent.Future
+import play.api.libs.concurrent.Execution.Implicits._
+import play.api.mvc.{Controller, Action}
+import services.PostService
+import util.PegDownProcessor
 
-object Home extends HomeImpl with Application
-
-trait HomeImpl extends Controller
-    with PostServiceComponent with MarkdownServiceComponent  {
+class Home @Inject() (posts: PostService) extends Controller {
   def index = Action.async {
     posts.getAll.map { allPosts =>
-      val allDisplayPosts = allPosts.map(DisplayPost(_)(markdown))
+      val allDisplayPosts = allPosts.map(DisplayPost(_)(new PegDownProcessor))
       Ok(views.html.home.render(allDisplayPosts))
     }
   }
 }
-

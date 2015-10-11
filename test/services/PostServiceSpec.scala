@@ -5,27 +5,18 @@ import org.joda.time.DateTime
 import org.specs2.concurrent.ExecutionEnv
 import org.specs2.mutable.Specification
 import play.twirl.api.Html
-import repositories.{PostRepository, PostRepositoryComponent}
+import repositories.PostRepository
 import org.specs2.mock.Mockito
+import util.MarkdownProcessor
 
 import scala.concurrent.Future
 
 
-class PostServiceSpec extends Specification with Mockito
-    with PostsComponent with PostRepositoryComponent with MarkdownServiceComponent {
+class PostServiceSpec extends Specification with Mockito {
   val mockPostRepository = mock[PostRepository]
-  override val postRepository: PostRepository = mockPostRepository
-  val mockMarkdown = mock[MarkdownService]
-  override val markdown = mockMarkdown
+  val mockMarkdown = mock[MarkdownProcessor]
 
-  object TestPostServiceComponent extends PostsComponent
-      with PostRepositoryComponent with MarkdownServiceComponent {
-    override val postRepository: PostRepository = mockPostRepository
-    override val markdown = mockMarkdown
-  }
-
-
-  val postService = TestPostServiceComponent.posts
+  val testPosts = new Posts(mockMarkdown, mockPostRepository)
   val testPost = Post("Title", "content", DateTime.now, "James")
 
 
@@ -38,22 +29,22 @@ class PostServiceSpec extends Specification with Mockito
       mockMarkdown.apply(testPost.content) returns mockMarkdownContent
       val expectedDisplayPost = DisplayPost(testPost)(mockMarkdown)
 
-      postRepository.findByTitle("First!") returns response
-      postService.findByTitleDisplay("First!") must beSome(expectedDisplayPost).await
+      mockPostRepository.findByTitle("First!") returns response
+      testPosts.findByTitleDisplay("First!") must beSome(expectedDisplayPost).await
     }
 
     "find post with title 'First!'" in {
       val mockPost = mock[Future[Option[Post]]]
 
-      postRepository.findByTitle("First!") returns mockPost
-      posts.findByTitle("First!") must beEqualTo(mockPost)
+      mockPostRepository.findByTitle("First!") returns mockPost
+      testPosts.findByTitle("First!") must beEqualTo(mockPost)
     }
 
     "get all posts" in {
       val mockPosts = mock[Future[List[Post]]]
 
-      postRepository.getAll returns mockPosts
-      posts.getAll must equalTo(mockPosts)
+      mockPostRepository.getAll returns mockPosts
+      testPosts.getAll must equalTo(mockPosts)
     }
 
     "get all posts and process the markdown content" in { implicit ee: ExecutionEnv =>
@@ -65,16 +56,16 @@ class PostServiceSpec extends Specification with Mockito
       mockMarkdown.apply(testPost.content) returns mockMarkdownContent
       val expectedDisplayPost = DisplayPost(testPost)(mockMarkdown)
 
-      postRepository.getAll returns mockPosts
-      posts.getAllDisplay must contain(expectedDisplayPost).await
+      mockPostRepository.getAll returns mockPosts
+      testPosts.getAllDisplay must contain(expectedDisplayPost).await
     }
 
     "add a post" in {
       val mockPost = mock[Post]
       val addPostSuccess = Future.successful {}
 
-      postRepository.add(mockPost) returns addPostSuccess
-      posts.add(mockPost) must equalTo(addPostSuccess)
+      mockPostRepository.add(mockPost) returns addPostSuccess
+      testPosts.add(mockPost) must equalTo(addPostSuccess)
     }
   }
 }
