@@ -1,9 +1,8 @@
-package services
+package util
 
 import org.specs2.mutable.Specification
-import util.PegDownProcessor
 
-class PegdownServiceSpec extends Specification with PegdownServiceComponent {
+class PegDownHelperSpec extends Specification {
   val processor = new PegDownProcessor
 
   "MarkdownService" should {
