@@ -1,12 +1,12 @@
 package controllers
 
+import com.github.t3hnar.bcrypt._
 import models.User
 import org.specs2.mock.Mockito
 import org.specs2.mutable._
-import com.github.t3hnar.bcrypt._
-import play.api.test.{WithApplication, FakeRequest}
 import play.api.test.Helpers._
-import play.filters.csrf.{CSRFConfig, CSRF}
+import play.api.test.{FakeRequest, WithApplication}
+import play.filters.csrf.CSRF
 import repositories.UserRepository
 
 import scala.concurrent.Future
@@ -31,20 +31,18 @@ class AuthSpec extends Specification with Mockito {
   val singleUserRepository = mock[UserRepository]
   singleUserRepository.fetchByEmail(email) returns futureUser
 
-  object SingleAuth extends AuthImpl {
-    override val userRepository: UserRepository = singleUserRepository
-  }
+  val auth = new Auth(singleUserRepository)
 
   "Auth login" should {
     "allow login" in new WithApplication {
-      val loginResponse = SingleAuth.loginPost()(fakeLoginRequest())
+      val loginResponse = auth.loginPost()(fakeLoginRequest())
       status(loginResponse) must equalTo(ACCEPTED)
       session(loginResponse).get("email") must beSome(email)
     }
     "be unauthorised for incorrect password" in new WithApplication {
       val incorrectPasswordRequest = fakeLoginRequest(password = "incorrectpassword")
 
-      val loginResponse = SingleAuth.loginPost()(incorrectPasswordRequest)
+      val loginResponse = auth.loginPost()(incorrectPasswordRequest)
       status(loginResponse) must equalTo(UNAUTHORIZED)
       session(loginResponse).get("email") must beNone
     }
@@ -55,7 +53,7 @@ class AuthSpec extends Specification with Mockito {
     "be unauthorised for unknown email" in new WithApplication {
       val unknownEmailRequest = fakeLoginRequest(email = unknownEmail)
 
-      val loginResponse = SingleAuth.loginPost()(unknownEmailRequest)
+      val loginResponse = auth.loginPost()(unknownEmailRequest)
       status(loginResponse) must equalTo(UNAUTHORIZED)
       session(loginResponse).get("email") must beNone
     }

@@ -1,21 +1,21 @@
 package controllers
 
-import play.api.Play.current
+import javax.inject.Inject
+
+import play.api.libs.concurrent.Execution.Implicits._
 import akka.dispatch.Futures
+import models.{DisplayPost, PostForm}
+import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.{Controller, Action}
-import play.api.libs.concurrent.Execution.Implicits._
-import models.{PostForm, DisplayPost}
-import services.{MarkdownServiceComponent, PostServiceComponent}
-import scala.concurrent.Future
 import play.api.i18n.Messages.Implicits._
+import play.api.mvc.Action
+import services.PostService
+import util.PegDownProcessor
 
+class Blog @Inject() (posts: PostService) extends Application with Security {
 
-object Blog extends BlogImpl with Application
-
-trait BlogImpl extends Controller with Security
-    with PostServiceComponent with MarkdownServiceComponent {
+  lazy val markdown = new PegDownProcessor
 
   def index = Action.async {
     posts.getAll.map { allPosts =>

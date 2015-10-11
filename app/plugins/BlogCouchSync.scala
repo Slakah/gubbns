@@ -1,16 +1,14 @@
 package plugins
 
-import components.Default
 import db.DatabaseName.StringWithToDatabaseName
+import db._
 import db.models.DesignFormat.designFormats
 import db.models.{Design, ViewFunction}
-import db.{CouchStructure, CouchSync, DatabaseStructure, DesignStructure}
 import play.Logger
 import play.api.libs.json.Json
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Await
-import scala.util.{Success, Failure}
-import scala.concurrent.duration._
+import scala.util.{Failure, Success}
 
 object BlogStructure {
 
@@ -40,10 +38,10 @@ object BlogStructure {
 
 }
 
-object BlogCouchSync extends Default {
-  val couchSync = new CouchSync(couchService.couch)
+class BlogCouchSync(couch: Couch) {
 
   def sync() = {
+    val couchSync = new CouchSync(couch)
     val syncAction = couchSync.sync(BlogStructure.blogStructure)
     syncAction.onComplete {
       case Success(_) => Logger.info("Successfully synced CouchDB design documents")
@@ -51,11 +49,4 @@ object BlogCouchSync extends Default {
     }
     syncAction
   }
-
 }
-
-// TODO: Make a DI play module
-object BlogCouchSyncPlugin {
-  Await.ready(BlogCouchSync.sync(), 5.seconds)
-}
-

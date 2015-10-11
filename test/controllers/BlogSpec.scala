@@ -7,7 +7,7 @@ import org.specs2.mutable.Specification
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, WithApplication}
 import play.filters.csrf.CSRF
-import services.{PegdownServiceComponent, PostService}
+import services.PostService
 
 import scala.concurrent.Future
 
@@ -25,9 +25,7 @@ class BlogSpec extends Specification with Mockito with Security {
 
     val mockPostsService = mock[PostService]
 
-    object TestBlog extends BlogImpl with PegdownServiceComponent {
-      override val posts: PostService = mockPostsService
-    }
+    val blog = new Blog(mockPostsService)
 
     "allow adding of posts" in {
       def fakeRequestLoggedOut(title: String = title, content: String = content) = {
@@ -44,7 +42,7 @@ class BlogSpec extends Specification with Mockito with Security {
       }
 
       "disabled when unauthorised" in new WithApplication {
-        val addPostResponse = Blog.addPost()(fakeRequestLoggedOut())
+        val addPostResponse = blog.addPost()(fakeRequestLoggedOut())
         status(addPostResponse) must equalTo(UNAUTHORIZED)
       }
 
@@ -53,7 +51,7 @@ class BlogSpec extends Specification with Mockito with Security {
 
         mockPostsService.add(testPost) returns Future.successful((): Unit)
 
-        val addPostResponse = TestBlog.addPost()(fakePostRequest())
+        val addPostResponse = blog.addPost()(fakePostRequest())
         status(addPostResponse) must equalTo(CREATED)
         there was one(mockPostsService).add(testPost)
       }

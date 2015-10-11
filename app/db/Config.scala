@@ -1,5 +1,6 @@
 package db
 
+import com.google.inject.ImplementedBy
 import play.api.Play
 
 
@@ -12,6 +13,7 @@ case class Config(
   }
 }
 
+@ImplementedBy(classOf[PlayConfigService])
 trait ConfigService {
   def config(): Config
 }

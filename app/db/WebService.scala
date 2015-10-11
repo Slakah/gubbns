@@ -1,10 +1,12 @@
 package db
 
+import com.google.inject.ImplementedBy
 import play.api.Play.current
 import play.api.libs.ws.{WS, WSResponse}
 
 import scala.concurrent.Future
 
+@ImplementedBy(classOf[WSWebService])
 trait WebService {
   def put(url: String, body: String): Future[WSResponse]
 

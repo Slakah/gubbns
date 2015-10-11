@@ -2,7 +2,7 @@ package models
 
 import org.joda.time.DateTime
 import play.twirl.api.Html
-import services.MarkdownService
+import util.MarkdownProcessor
 
 case class DisplayPost(title: String,
                         markdownContent: Html,
@@ -10,7 +10,7 @@ case class DisplayPost(title: String,
                         author: String)
 
 object DisplayPost {
-  def apply(post: Post)(implicit markdown: MarkdownService): DisplayPost = {
+  def apply(post: Post)(implicit markdown: MarkdownProcessor): DisplayPost = {
      DisplayPost(post.title, markdown(post.content), post.published, post.author)
   }
 }

@@ -15,11 +15,7 @@ import db.models.ViewFormat.viewFormats
 class CouchUserRepositorySpec extends Specification with Mockito {
   val mockBlogService = mock[BlogCouchService]
 
-  object TestCouchUserRepository extends BlogCouchServiceComponent with CouchUserRepositoryComponent {
-    override val blogService: BlogCouchService = mockBlogService
-  }
-
-  val userRepository = TestCouchUserRepository.userRepository
+  val userRepository = new CouchUserRepository(mockBlogService)
 
   "CouchServiceComponent" should {
     "fetch user joe@gmail.com" in { implicit ee: ExecutionEnv =>
