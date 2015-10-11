@@ -2,16 +2,18 @@ package repositories
 
 import javax.inject.Inject
 
+import com.google.inject.ImplementedBy
 import db.ViewQuery
 import db.models.View
 import models.User
-import play.api.libs.json.{JsString, Json}
-import scala.concurrent.Future
-import db.models.ViewFormat.viewFormats
 import models.UserFormat.userFormats
+import db.models.ViewFormat.viewFormats
 import play.api.libs.concurrent.Execution.Implicits._
+import play.api.libs.json.{JsString, Json}
 
+import scala.concurrent.Future
 
+@ImplementedBy(classOf[CouchUserRepository])
 trait UserRepository {
   def fetchByEmail(email: String): Future[Option[User]]
 }
