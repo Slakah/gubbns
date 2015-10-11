@@ -1,6 +1,6 @@
 #!/bin/sh
 
-./activator stage
+./activator clean stage
 
 rsync -avz --progress target/universal/stage/ jcollier@gubbns.com:~/gubbns/
 
