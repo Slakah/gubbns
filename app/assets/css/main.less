@@ -1,24 +1,14 @@
 @import "_base";
+@import "_layout";
 
-@media (min-width: 700px) {
-    .container, .header {
-        width: 700px;
-    }
+.container, .header {
+    .singleColumn();
 }
 
-@media (max-width: 700px) {
-    .container, .header {
-        width: auto;
-    }
-}
 
 html,body {
     height:100%;
     .bodyFont();
-}
-
-.container, .header {
-    margin: 0 auto;
 }
 
 a, a:visited, a:active {

@@ -1,0 +1,25 @@
+@small: ~"(max-width: 399px)";
+@medium: ~"(min-width: 400px) and (max-width: 699px)";
+@large: ~"(min-width: 700px)";
+
+@spacing-small: 8px;
+@spacing-medium: 16px;
+
+.singleColumn() {
+  @media @small {
+    width: auto;
+    padding-left: @spacing-small;
+    padding-right: @spacing-small;
+  }
+
+  @media @medium {
+    width: auto;
+    padding-left: @spacing-medium;
+    padding-right: @spacing-medium;
+  }
+
+  @media @large {
+    width: 650px;
+    margin: 0 auto;
+  }
+}
