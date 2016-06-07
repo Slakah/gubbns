@@ -3,7 +3,7 @@
 @import helper._
 @main("Login", headerEnabled = false) {
 
-    @form(action = routes.Auth.loginPost()) {
+    @form(action = routes.Auth.loginPost(), 'class -> "pure-form pure-form-stacked") {
         @inputText(userForm("email"))
         @inputPassword(userForm("password"))
         @CSRF.formField
