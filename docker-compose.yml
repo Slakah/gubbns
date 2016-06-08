@@ -1,0 +1,9 @@
+gubbns:
+  build: .
+  command: gubbns -Dhttp.port=80 -Dcouchdb.default.host=couchdb
+  ports:
+    - "80:80"
+  links:
+    - couchdb:couchdb
+couchdb:
+  image: couchdb:1.6.1
