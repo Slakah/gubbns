@@ -1,9 +1,23 @@
-gubbns:
-  build: .
-  command: gubbns -Dhttp.port=80 -Dcouchdb.default.host=couchdb
-  ports:
-    - "80:80"
-  links:
-    - couchdb:couchdb
-couchdb:
-  image: couchdb:1.6.1
+version: '2'
+services:
+  gubbns:
+    build: .
+    command: gubbns -Dhttp.port=80 -Dcouchdb.default.host=couchdb
+    ports:
+      - "80:80"
+    links:
+      - couchdb:couchdb
+  couchdb:
+    build:
+      dockerfile: Dockerfile-couchdb
+      context: .
+  dockup:
+    image: slakah/dockup-gs
+    volumes_from:
+      - couchdb
+    command: >
+      gs://gubbns-backup/gubbns/
+      /usr/local/var/lib/couchdb
+      --cron-time '0 * * * *'
+      --backup-name gubbns
+      --gc-key '${GCLOUD_GUBBNS_BACKUP_KEY}'
