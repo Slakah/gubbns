@@ -18,6 +18,6 @@ services:
     command: >
       gs://gubbns-backup/gubbns/
       /usr/local/var/lib/couchdb
-      --cron-time '0 * * * *'
+      --cron-time '32 4 * * *'
       --backup-name gubbns
       --gc-key '${GCLOUD_GUBBNS_BACKUP_KEY}'
