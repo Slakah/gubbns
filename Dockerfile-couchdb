@@ -1,0 +1,6 @@
+FROM couchdb:1.6.1
+
+COPY ./wait-for-file.sh /
+
+ENTRYPOINT ["tini", "--", "/wait-for-file.sh", "/usr/local/var/lib/couchdb/blog.couch"]
+CMD ["couchdb"]
