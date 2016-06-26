@@ -2,9 +2,11 @@ version: '2'
 services:
   gubbns:
     build: .
-    command: gubbns -Dhttp.port=80 -Dcouchdb.default.host=couchdb
+    command: gubbns -Dcouchdb.default.host=couchdb
+    expose:
+      - "9000"
     ports:
-      - "80:80"
+      - "9000:9000"
     links:
       - couchdb:couchdb
   couchdb:
