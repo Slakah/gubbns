@@ -2,7 +2,7 @@ version: '2'
 services:
   gubbns:
     build: .
-    command: gubbns -Dcouchdb.default.host=couchdb
+    command: gubbns -Dcouchdb.default.host=couchdb -J-Xmx256M -J-Xms256M
     expose:
       - "9000"
     ports:
