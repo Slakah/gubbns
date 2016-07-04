@@ -9,10 +9,12 @@ services:
       - "9000:9000"
     links:
       - couchdb:couchdb
+    restart: always
   couchdb:
     build:
       dockerfile: Dockerfile-couchdb
       context: .
+    restart: always
   dockup:
     image: slakah/dockup-gs
     volumes_from:
@@ -23,3 +25,4 @@ services:
       --cron-time '32 4 * * *'
       --backup-name gubbns
       --gc-key '${GCLOUD_GUBBNS_BACKUP_KEY}'
+    restart: always
