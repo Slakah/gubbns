@@ -6,6 +6,10 @@ scala:
    - 2.11.7
 services:
   - couchdb
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt/boot/
 
 before_install: unset SBT_OPTS JVM_OPTS
 script: ./activator test
